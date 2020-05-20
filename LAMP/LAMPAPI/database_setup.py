@@ -1,3 +1,6 @@
+# much of this code has been modified from
+# https://www.kite.com/blog/python/flask-tutorial/
+
 import sys
 
 # for creating the mapper code
@@ -16,25 +19,60 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 
-# We will add classes here
-class Book(Base):
-    __tablename__ = 'book'
+# We will add classes for both tables
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(250), nullable=False)
-    author = Column(String(250), nullable=False)
-    genre = Column(String(250))
+class Users(Base):
+    __tablename__ = 'Users' # or whatever table is called
+
+
+    id = Column(Integer, primary_key=True) # this is user_id in contacts table
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    login = Column(String(50))
+	password = Column(String(50), nullable=False)
 
     @property
     def serialize(self):
         return {
-            'title': self.title,
-            'author': self.author,
-            'genre': self.genre,
-            'id': self.id,
+            'FirstName': self.first_name,
+            'LastName': self.last_name,
+            'Login': self.login,
+            'Password': self.password,
+			'id': self.id,
         }
 
 
+class Contacts(Base):
+    tablename = 'Contacts'
+
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    email = Column(String(80), nullable=False)
+    phone = Column(String(20), nullable=False)
+    user_id = Column(Integer, nullable=False)
+
+    @property
+    def serialize(self)
+        return{
+            'FirstName' : self.first_name,
+            'LastName' : self.last_name,
+            'email' : self.email,
+            'phone' : self.phone,
+            'id': self.id,
+            'UserID' : self.user_id,
+        }
+
 # creates a create_engine instance at the bottom of the file
-engine = create_engine('sqlite:///books-collection.db')
+#engine = create_engine('mysql://username:password@servername/databasename')
+engine = create_engine('mysql://cop433123:password@servername/cop43312_database')
+
 Base.metadata.create_all(engine)
+
+
+'''
+    GET: The GET method is only used to retrieve information from the given server. Requests using this method should only recover data and should have no other effect on the data.
+    POST: A POST request is used to send data back to the server using HTML forms.
+    PUT: A PUT request replaces all the current representations of the target resource with the uploaded content.
+    DELETE: A DELETE request removes all the current representations of the target resource given by URI.
+'''
