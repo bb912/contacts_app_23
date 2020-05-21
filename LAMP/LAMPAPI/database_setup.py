@@ -21,7 +21,7 @@ Base = declarative_base()
 
 # We will add classes for both tables
 
-class Users(Base):
+class User(Base):
     __tablename__ = 'Users' # or whatever table is called
 
 
@@ -41,9 +41,8 @@ class Users(Base):
 			'id': self.id,
         }
 
-
-class Contacts(Base):
-    tablename = 'Contacts'
+class Contact(Base):
+    __tablename__ = 'Contacts'
 
     id = Column(Integer, primary_key=True)
     first_name = Column(String(50), nullable=False)
