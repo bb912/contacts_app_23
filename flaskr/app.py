@@ -9,7 +9,7 @@ from database_setup import Base, User, Contact
 
 
 # Connect to Database and create database session
-engine = create_engine('mysql://cop433123:password@servername/cop43312_database')
+engine = create_engine('mysql://cop433123:password@cop433123.us/cop43312_database')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -23,7 +23,6 @@ def home():
         return render_template('index.html')
     else:
         # what to do here?
-
         return render_template('index.html')
 
 # LOGIN PAGE
@@ -95,8 +94,8 @@ def not_found(error):
 @app.route('/')
 @app.route('/user/<int:user_id>/', )
 def showContactsForUser(user_id):
-    contacts = session.query(Contact).filter_by(user_id=user_id)
-
+	# get_contacts function returns a json to send to the template in return
+    contacts = get_contacts(user_id)
     # send the contacts with the html
     # so the index.html template can display the contacts
     return render_template('index.html', contacts=contacts)
@@ -121,6 +120,7 @@ def newContact(user_id):
         return render_template('add_contact.html')
 
 
+# redundnat????
 # Do we even need this routing or do we just need the API below?
 @app.route("/user/<int:user_id>/<int:contact_id>", methods=['GET', 'POST'])
 def editBook(user_id, contact_id):
@@ -133,19 +133,6 @@ def editBook(user_id, contact_id):
         return render_template('editBook.html', book=editedBook)
 
 
-
-
-# do we need something like this for contacts or is the delete in API sufficient?
-# This will let us Delete our book
-@app.route('/books/<int:book_id>/delete/', methods=['GET', 'POST'])
-def deleteBook(book_id):
-    bookToDelete = session.query(Book).filter_by(id=book_id).one()
-    if request.method == 'POST':
-        session.delete(bookToDelete)
-        session.commit()
-        return redirect(url_for('showBooks', book_id=book_id))
-    else:
-        return render_template('deleteBook.html', book=bookToDelete)
 
 
 """
@@ -179,7 +166,6 @@ def delete_contact(id):
     return "Removed contact with id %s" % contact_id
 
 
-
 # update an existing contact
 def update_contact(contact_id, first_name, last_name, phone, email):
     updated_contact = session.query(Contact).filter_by(id=contact_id).one()
@@ -197,7 +183,6 @@ def update_contact(contact_id, first_name, last_name, phone, email):
     return "Updated contact with id %s" % contact_id
 
 
-
 # using the args of the request,
 @app.route('/')
 @app.route('/contactsApi', methods=['GET', 'POST'])
@@ -210,12 +195,31 @@ def contactsFunction():
         phone = request.args.get('phone', '')
         email = request.args.get('email', '')
         user = request.args.get('user_id', '')
+
         return create_new_contact(first, last, phone, email, user)
 
 
 
-# get a specific contact by contact ID
+# get, put, or delete,  a specific contact by contact ID
 @app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def contactsFunctionID(id):
+    if request.method == 'GET':
+        return get_contact(id)
+
+    elif request.method == 'PUT':
+        first = request.args.get('first_name', '')
+        last = request.args.get('last_name', '')
+        phone = request.args.get('phone', '')
+        email = request.args.get('email', '')
+        user = request.args.get('user_id', '')
+        return update_contact(id, first, last, phone, email, user)
+
+    elif request.method == 'DELETE':
+        return delete_contact(id)
+
+
+# get, put, or delete,  a specific user by userID
+@app.route('/usersApi/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def contactsFunctionID(id):
     if request.method == 'GET':
         return get_contact(id)
