@@ -46,6 +46,7 @@ def create_new_contact(user_id, first_name, last_name, phone, email):
     session.commit()
     return jsonify(Contact=added_contact.serialize)
 
+# delete contact by contact ID
 def delete_contact(id):
     contact_to_delete = session.query(Contact).filter_by(id=id).one()
     session.delete(contact_to_delete)
@@ -68,10 +69,6 @@ def update_contact(contact_id, first_name, last_name, phone, email):
     session.commit()
 
     return "Updated contact with id %s" % contact_id
-
-
-
-
 
 # list contacts or add a contact (for a specific user)
 
@@ -112,7 +109,10 @@ def contactsFunctionID(id):
     elif request.method == 'DELETE':
         return delete_contact(id)
 
-'''USER API'''
+
+'''
+USER API
+'''
 # get personal info given a single user_id
 def user_info(id):
 	user = session.query(User).filter_by(id=id).one()
