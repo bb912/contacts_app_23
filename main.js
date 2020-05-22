@@ -11,7 +11,7 @@
   4. Add comments to improve readability of the code.
   5. Connect to API Endpoints.
 
-  Last updated: 5/22/2020, 10:30 AM
+  Last updated: 5/22/2020, 1:10 PM
 */
 
 var urlBase = 'https://cop433123.us/';
@@ -130,6 +130,10 @@ function doLogout()
 	window.location.href = "index.html";
 }
 
+// The following functions include helper functions to validate user inputs.
+// Note that these still need to be implemented into the addContact() and
+// searchContact() functions.
+
 // Checks if a value is not empty, returns false if size 0, null, or undefined.
 function isNotEmpty(value)
 {
@@ -138,39 +142,65 @@ function isNotEmpty(value)
 }
 
 // Checks if the user entered a valid email.
-//function isEmail(email)
-//{
-
-//}
-
-function isValid()
+function checkEmail(email)
 {
-  var flag = true;
-  //Continue here...
-
-  checkName();
-  checkEmail();
-  checkPhone();
-
-  return flag;
+  // A regex used to check for a valid email address.
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
 }
-
-class Contact
+function checkName(name)
 {
-  constructor(firstName, lastName, email, phone)
+  if(name.length < 1)
   {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.phone = phone;
+    return false;
   }
+  return true;
 }
+
+function checkPhone(phone)
+{
+  // A regex used to check for a valid phone number.
+  // Includes phone numbers in the format:
+  // 123-456-7890
+  // 123.456.7890
+  // 123 456 7890
+  var re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+}
+// end of helper functions
+
 function addContact()
 {
-  var newFirst = document.getElementById("firstText").value();
-  var newLast = document.getElementById("lastText").value();
-  var newEmail = document.getElementById("emailText").value();
-  var newPhone = document.getElementById("phoneText").value();
+  var flag = false;
+
+  // Checks validity of user input before sending JSON payload.
+  while(flag === false)
+  {
+    var newFirst = document.getElementById("firstText").value();
+    var newLast = document.getElementById("lastText").value();
+    var newEmail = document.getElementById("emailText").value();
+    var newPhone = document.getElementById("phoneText").value();
+    if(!checkName(newFirst))
+    {
+      document.getElementById("addContactResult").innerHTML = "First name cannot be empty";
+    }
+    else if(!checkName(newLast))
+    {
+      document.getElementById("addContactResult").innerHTML = "Last name cannot be empty";
+    }
+    else if(!checkEmail(newEmail))
+    {
+      document.getElementById("addContactResult").innerHTML = "Invalid email address";
+    }
+    else if(!checkPhone(newPhone))
+    {
+      document.getElementById("addContactResult").innerHTML = "Invalid phone number";
+    }
+    else
+    {
+      flag = true;
+    }
+  }
+
   var jsonPayload = '{"firstName" : "' + newFirst + '", "lastName" : "' + newLast + '", "email" : "' + newEmail + '","phone" : "' + newPhone + '","userId" : ' + userId + '}';
 
   // Edit name to match with API python file.
