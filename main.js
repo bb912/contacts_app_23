@@ -1,16 +1,20 @@
-/* Main JavaScript code for contact manager web application. Note that a majority of the code is similar
-  to the sample given in the LAMP stack demo. Most changes were made to add() and search() functions.
-  Additional functions need to be created to work with addContact() function.
+/* Main JavaScript code for contact manager web application. Note that a majority of the
+  code is similar to the sample given in the LAMP stack demo. Most changes were made to
+  add() and search() functions. Additional functions need to be created to work with
+  addContact() function.
 
-  TO-DO: (updated 5/20/2020)
-  1. add urlBase.
-  2. edit addContact() function and add other functions to check validity of user input.
-  3. edit searchContact function that enables search by first/last name.
-  4. add comments to improve readability of the code.
-  5. check md5.js and make adjustments to hashing functions.
+  TO-DO:
+  1. Update Id names each time document.getElementById() is called to match html code.
+  2. Edit addContact() function and add other functions to check validity of user input.
+  3. Edit searchContact() function that enables search through names, phones, and emails
+     by a given key.
+  4. Add comments to improve readability of the code.
+  5. Connect to API Endpoints.
+
+  Last updated: 5/22/2020, 10:30 AM
 */
 
-var urlBase = '';
+var urlBase = 'https://cop433123.us/';
 var extension = 'py';
 
 var userID = 0;
@@ -23,31 +27,32 @@ function doLogin()
 	firstName = "";
 	lastName = "";
 
+  // Retrieving login information.
 	var login = document.getElementById("loginName").value;
 	var password = document.getElementById("loginPassword").value;
 
-  // Hashes user input using md5.js, see additional file within front end for
-  // more details.
-  var hash = md5( password );
-
-  // "loginResult" must match id in HTML
+  // Sets the innerHTML property to an empty string.
 	document.getElementById("loginResult").innerHTML = "";
-  var jsonPayload = '{"login" : "' + login + '", "password" : "' + hash + '"}';
+  var jsonPayload = '{"login" : "' + login + '", "password" : "' + password + '"}';
   var url = urlBase + '/Login.' + extension;
 
+  // Transferring data from front end to API.
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, false);
 
+  // Since false, any xhr.send() calls do not return until a response is achieved.
+	xhr.open("POST", url, false);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-  // A try/catch block to determine if entered input matches a valid user/password combination.
+  // Checking if the user entered a valid user/password combination.
   try
 	{
 		xhr.send(jsonPayload);
+
+    // JSON.parse() converts a string to an object
 		var jsonObject = JSON.parse( xhr.responseText );
 		userId = jsonObject.id;
 
-		if( userId < 1 )
+		if(userId < 1)
 		{
 			document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
 			return;
@@ -56,7 +61,9 @@ function doLogin()
 		firstName = jsonObject.firstName;
 		lastName = jsonObject.lastName;
 		saveCookie();
-		window.location.href = "contactApp.html"; // double check this
+
+    // change to appropriate filename
+		window.location.href = "contactApp.html";
 	}
 
 	catch(err)
@@ -78,9 +85,12 @@ function readCookie()
 {
 	userId = -1;
 	var data = document.cookie;
+
+  // splits and token store the firstName, lastName, userId in arrays.
 	var splits = data.split(",");
 	for(var i = 0; i < splits.length; i++)
 	{
+    // Removing whitespace.
 		var thisOne = splits[i].trim();
 		var tokens = thisOne.split("=");
 		if( tokens[0] == "firstName" )
@@ -97,6 +107,7 @@ function readCookie()
 		}
 	}
 
+  // Returns to homepage. Otherwise successful login.
 	if( userId < 0 )
 	{
 		window.location.href = "index.html";
@@ -112,7 +123,10 @@ function doLogout()
 	userId = 0;
 	firstName = "";
 	lastName = "";
+  // prevents webpage from being cached
 	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+
+  // returns user to main page
 	window.location.href = "index.html";
 }
 
@@ -133,21 +147,55 @@ function isValid()
 {
   var flag = true;
   //Continue here...
+
+  checkName();
+  checkEmail();
+  checkPhone();
+
   return flag;
+}
+
+class Contact
+{
+  constructor(firstName, lastName, email, phone)
+  {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.phone = phone;
+  }
 }
 function addContact()
 {
-  // All fields entered by user are grouped together.
-  var newContact = {};
-  document.addEventListener("DOMContentLoaded", function())
-  {
-    // Note that these ID names are just placeholders, they need to be adjusted later.
-    newContact.firstName = document.getElementById('newFirst');
-    newContact.lastName = document.getElementById('newLast');
-    newContact.email = document.getElementById('newEmail');
-    newContact.phone = document.getElementById('newPhone');
-  }
-  
+  var newFirst = document.getElementById("firstText").value();
+  var newLast = document.getElementById("lastText").value();
+  var newEmail = document.getElementById("emailText").value();
+  var newPhone = document.getElementById("phoneText").value();
+  var jsonPayload = '{"firstName" : "' + newFirst + '", "lastName" : "' + newLast + '", "email" : "' + newEmail + '","phone" : "' + newPhone + '","userId" : ' + userId + '}';
+
+  // Edit name to match with API python file.
+  var url = urlBase + '/AddContact.' + extension;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try
+	{
+		xhr.onreadystatechange = function()
+		{
+			if (this.readyState == 4 && this.status == 200)
+			{
+				document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+			}
+		};
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("contactAddResult").innerHTML = err.message;
+	}
+
 }
 
 function searchContact()
