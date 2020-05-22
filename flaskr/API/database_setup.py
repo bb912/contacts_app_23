@@ -38,7 +38,7 @@ class User(Base):
                         'LastName': self.last_name,
                         'Login': self.login,
                         'Password': self.password,
-                        'id': self.id,
+                        'ID': self.id,
                 }
 
 class Contact(Base):
@@ -58,7 +58,7 @@ class Contact(Base):
                         'LastName' : self.last_name,
                         'email' : self.email,
                         'phone' : self.phone,
-                        'id': self.id,
+                        'ID': self.id,
                         'UserID' : self.user_id,
                 }
 
