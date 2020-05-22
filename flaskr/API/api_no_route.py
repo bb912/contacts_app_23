@@ -28,12 +28,12 @@ from flask import jsonify
 
 # gets all contacts for a specific user_id
 def get_contacts(user_id):
-        contacts = session.query(Contacts).filter_by(user_id=user_id)
+        contacts = session.query(Contact).filter_by(user_id=user_id)
         return jsonify(contacts=[c.serialize for c in contacts])
 
 # get a single contact by its id number
 def get_contact(contact_id):
-        contact = session.query(Contacts).filter_by(id=contact_id).one()
+        contact = session.query(Contact).filter_by(id=contact_id).one()
         return jsonify(Contact=contact.serialize)
 
 # create a new contact given all information
