@@ -119,7 +119,7 @@ def user_info(id):
 
 def create_new_user(first_name, last_name, login, password):
 
-		hash_pass = hashlib.md5(password.encode())
+		hash_pass = hash_hex(password)
 		added_user = User(FirstName=first_name,LastName=last_name,Login=login,Password=hash_pass)
 		session.add(added_user)
 		session.commit()
@@ -137,11 +137,31 @@ def update_user(id, first_name, last_name, login, password):
 		if login:
 				updated_user.Login = login
 		if password:
-				updated_user.Password = hashlib.md5(password.encode())
+				updated_user.Password = hash_hex(password)
 		session.add(updated_user)
 		session.commit()
 
 		return "Updated User with id %s" % id
+
+# returns hex digest version of hashed md5 password
+def hash_hex(password):
+	return hashlib.md5(password.encode()).hexdigest()
+
+#verifies password against password in database
+def verifyPassword(login, password):
+
+	user_to_verify = session.query(User).filter_by(Login=login).one()
+
+	if user_to_verify is not None:
+		if hash_hex(password) == user_to_verify.Password:
+
+			return jsonify(User=user_to_verify.serialize)
+			#return "Correct Password for %s" % login
+		else:
+			return "Incorrect Password for %s" % login
+	else:
+		return "User %s not Found" % login
+
 
 
 # either get the user's personal info or create a new user
@@ -151,12 +171,24 @@ def usersFunction():
 		# list all contacts for user
 		if request.method == 'GET':
 				return user_info(request.args.get('ID', ''))
+
+		# for registering
 		elif request.method == 'POST':
 				first = request.args.get('FirstName', '')
 				last = request.args.get('LastName', '')
 				login = request.args.get('Login', '')
 				password = request.args.get('Password', '')
 				return create_new_user(first, last, login, password)
+
+
+@app.route('/')
+@app.route('/userApi/login', methods=['GET'])
+def userLogin():
+	
+	# for logging in
+	if request.method == 'GET':
+		return verifyPassword(request.args.get('Login'), request.args.get('Password'))
+
 
 # for updating User's personal information
 @app.route('/userApi/<int:id>', methods=['PUT'])
