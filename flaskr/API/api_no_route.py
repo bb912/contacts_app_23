@@ -120,11 +120,8 @@ def user_info(id):
 def create_new_user(first_name, last_name, login, password):
 
 		hash_pass = hashlib.md5(password.encode())
-
-        added_user = \
-			User(FirstName=first_name, LastName=last_name, \
-			Login=login, Password=hash_pass)
-
+        added_user = User(FirstName=first_name,
+		LastName=last_name, Login=login, Password=hash_pass)
         session.add(added_user)
         session.commit()
         return jsonify(User=added_user.serialize)
