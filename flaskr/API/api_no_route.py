@@ -118,9 +118,9 @@ def user_info(id):
 		return jsonify(User=user.serialize)
 
 def create_new_user(first_name, last_name, login, password):
-		same_user_name = session.query(User).filter_by(Login=login)
+		same_user_name = session.query(User).filter_by(Login=login).count()
 
-		if same_user_name is not None:
+		if same_user_name > 0:
 			return "Username is already in Use, Please Choose another"
 
 		hash_pass = hash_hex(password)
