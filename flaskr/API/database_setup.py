@@ -37,7 +37,7 @@ class User(Base):
                         'FirstName': self.FirstName,
                         'LastName': self.LastName,
                         'Login': self.Login,
-                        'Password': hashlib.md5(self.Password.decode()),
+                        'Password': self.Password,
                         'ID': self.ID,
                 }
 
