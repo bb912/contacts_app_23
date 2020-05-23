@@ -118,8 +118,13 @@ def user_info(id):
 		return jsonify(User=user.serialize)
 
 def create_new_user(first_name, last_name, login, password):
+		same_user_name = session.query(User).filter_by(ID=id)
+
+		if same_user_name is not None:
+			return "Username is already in Use, Please Choose another"
 
 		hash_pass = hash_hex(password)
+
 		added_user = User(FirstName=first_name,LastName=last_name,Login=login,Password=hash_pass)
 		session.add(added_user)
 		session.commit()
@@ -184,7 +189,7 @@ def usersFunction():
 @app.route('/')
 @app.route('/userApi/login', methods=['GET'])
 def userLogin():
-	
+
 	# for logging in
 	if request.method == 'GET':
 		return verifyPassword(request.args.get('Login'), request.args.get('Password'))
