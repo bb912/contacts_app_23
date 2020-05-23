@@ -33,7 +33,7 @@ def get_contacts(user_id):
 
 # get a single contact by its id number
 def get_contact(contact_id):
-        contact = session.query(Contact).filter_by(id=contact_id).one()
+        contact = session.query(Contact).filter_by(ID=contact_id).one()
         return jsonify(Contact=contact.serialize)
 
 # create a new contact given all information
@@ -46,7 +46,7 @@ def create_new_contact(user_id, first_name, last_name, phone, email):
 
 # delete contact by contact ID
 def delete_contact(id):
-        contact_to_delete = session.query(Contact).filter_by(id=id).one()
+        contact_to_delete = session.query(Contact).filter_by(ID=id).one()
         session.delete(contact_to_delete)
         session.commit()
         return "Removed contact with id %s" % id
@@ -114,7 +114,7 @@ USER API
 # get personal info given a single user_id
 def user_info(id):
 
-        user = session.query(User).filter_by(id=id).one()
+        user = session.query(User).filter_by(ID=id).one()
         return jsonify(User=user.serialize)
 
 def create_new_user(first_name, last_name, login, password):
@@ -126,7 +126,7 @@ def create_new_user(first_name, last_name, login, password):
 
 def update_user(id, first_name, last_name, login, password):
 
-        updated_user = session.query(User).filter_by(id=id).one()
+        updated_user = session.query(User).filter_by(ID=id).one()
         if first_name:
                 updated_user.FirstName = first_name
         if last_name:
