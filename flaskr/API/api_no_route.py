@@ -118,7 +118,7 @@ def user_info(id):
 		return jsonify(User=user.serialize)
 
 def create_new_user(first_name, last_name, login, password):
-		same_user_name = session.query(User).filter_by(ID=id)
+		same_user_name = session.query(User).filter_by(Login=login)
 
 		if same_user_name is not None:
 			return "Username is already in Use, Please Choose another"
@@ -158,7 +158,7 @@ def verifyPassword(login, password):
 	user_to_verify = session.query(User).filter_by(Login=login).one()
 
 	if user_to_verify is not None:
-		if hash_hex(password) == user_to_verify.Password:
+		if hash_hex(password) is user_to_verify.Password:
 
 			return jsonify(User=user_to_verify.serialize)
 			#return "Correct Password for %s" % login
