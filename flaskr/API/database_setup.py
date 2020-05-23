@@ -14,7 +14,7 @@ from sqlalchemy.orm import relationship
 
 # for configuration
 from sqlalchemy import create_engine
-
+import hashlib
 # create declarative_base instance
 Base = declarative_base()
 
@@ -37,7 +37,7 @@ class User(Base):
                         'FirstName': self.FirstName,
                         'LastName': self.LastName,
                         'Login': self.Login,
-                        'Password': self.Password,
+                        'Password': hashlib.md5(self.Password.decode()),
                         'ID': self.ID,
                 }
 

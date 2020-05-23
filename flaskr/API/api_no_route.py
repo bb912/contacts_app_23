@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
-
+import hashlib
 app = Flask(__name__)
 import pymysql
 from sqlalchemy import create_engine
@@ -119,7 +119,9 @@ def user_info(id):
 
 def create_new_user(first_name, last_name, login, password):
 
-        added_user = User(FirstName=first_name, LastName=last_name, Login=login, Password=password)
+		hash_pass = hashlib.md5(password.encode())
+
+        added_user = User(FirstName=first_name, LastName=last_name, Login=login, Password=hash_pass)
         session.add(added_user)
         session.commit()
         return jsonify(User=added_user.serialize)
@@ -136,7 +138,7 @@ def update_user(id, first_name, last_name, login, password):
         if login:
                 updated_user.Login = login
         if password:
-                updated_user.Password = email
+                updated_user.Password = hashlib.md5(password.encode())
         session.add(updated_user)
         session.commit()
 
