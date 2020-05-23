@@ -124,6 +124,8 @@ def create_new_user(first_name, last_name, login, password):
         session.commit()
         return jsonify(User=added_user.serialize)
 
+
+
 def update_user(id, first_name, last_name, login, password):
 
         updated_user = session.query(User).filter_by(ID=id).one()
@@ -135,7 +137,7 @@ def update_user(id, first_name, last_name, login, password):
                 updated_user.Login = login
         if password:
                 updated_user.Password = email
-        session.add(updatedBook)
+        session.add(updated_user)
         session.commit()
 
         return "Updated User with id %s" % id
