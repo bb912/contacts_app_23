@@ -28,8 +28,8 @@ from flask import jsonify
 
 # gets all contacts for a specific user_id
 def get_contacts(user_id):
-        contacts = session.query(Contact).filter_by(user_id=user_id)
-        return jsonify(contacts=[c.serialize for c in contacts])
+        contacts = session.query(Contact).filter_by(UserID=user_id)
+        return jsonify(Contact=[c.serialize for c in contacts])
 
 # get a single contact by its id number
 def get_contact(contact_id):
@@ -38,8 +38,8 @@ def get_contact(contact_id):
 
 # create a new contact given all information
 def create_new_contact(user_id, first_name, last_name, phone, email):
-        added_contact = Contact(first_name=first_name, last_name=last_name,
-                                                        phone=phone, email=email, user_id=user_id)
+        added_contact = Contact(FirstName=first_name, LastName=last_name,
+                                                        PhoneNumber=phone, Email=email, UserID=user_id)
         session.add(added_contact)
         session.commit()
         return jsonify(Contact=added_contact.serialize)
@@ -49,20 +49,20 @@ def delete_contact(id):
         contact_to_delete = session.query(Contact).filter_by(id=id).one()
         session.delete(contact_to_delete)
         session.commit()
-        return "Removed contact with id %s" % contact_id
+        return "Removed contact with id %s" % id
 
 
 # update an existing contact
 def update_contact(contact_id, first_name, last_name, phone, email):
-        updated_contact = session.query(Contact).filter_by(id=contact_id).one()
+        updated_contact = session.query(Contact).filter_by(ID=contact_id).one()
         if first_name:
-                updated_contact.first_name = first_name
+                updated_contact.FirstName = first_name
         if last_name:
-                updated_contact.last_name = last_name
+                updated_contact.LastName = last_name
         if phone:
-                updated_contact.phone = phone
+                updated_contact.PhoneNumber = phone
         if email:
-                updated_contact.email = email
+                updated_contact.Email = email
         session.add(updatedBook)
         session.commit()
 
@@ -80,13 +80,13 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 def contactsFunction():
         # list all contacts for user
         if request.method == 'GET':
-                return get_contacts(request.args.get('user_id', ''))
+                return get_contacts(request.args.get('UserID', ''))
         elif request.method == 'POST':
-                first = request.args.get('first_name', '')
-                last = request.args.get('last_name', '')
-                phone = request.args.get('phone', '')
-                email = request.args.get('email', '')
-                user = request.args.get('user_id', '')
+                first = request.args.get('FirstName', '')
+                last = request.args.get('LastName', '')
+                phone = request.args.get('PhoneNumber', '')
+                email = request.args.get('Email', '')
+                user = request.args.get('UserID', '')
                 return create_new_contact(first, last, phone, email, user)
 
 
@@ -97,11 +97,11 @@ def contactsFunctionID(id):
                 return get_contact(id)
 
         elif request.method == 'PUT':
-                first = request.args.get('first_name', '')
-                last = request.args.get('last_name', '')
-                phone = request.args.get('phone', '')
-                email = request.args.get('email', '')
-                user = request.args.get('user_id', '')
+                first = request.args.get('FirstName', '')
+                last = request.args.get('LastName', '')
+                phone = request.args.get('PhoneNumber', '')
+                email = request.args.get('Email', '')
+                user = request.args.get('UserID', '')
                 return update_contact(id, first, last, phone, email, user)
 
         elif request.method == 'DELETE':
@@ -119,7 +119,7 @@ def user_info(id):
 
 def create_new_user(first_name, last_name, login, password):
 
-        added_user = User(first_name=first_name, last_name=last_name, login=login, password=password)
+        added_user = User(FirstName=first_name, LastName=last_name, Login=login, Password=password)
         session.add(added_user)
         session.commit()
         return jsonify(User=added_user.serialize)
@@ -128,13 +128,13 @@ def update_user(id, first_name, last_name, login, password):
 
         updated_user = session.query(User).filter_by(id=id).one()
         if first_name:
-                updated_user.first_name = first_name
+                updated_user.FirstName = first_name
         if last_name:
-                updated_user.last_name = last_name
+                updated_user.LastName = last_name
         if login:
-                updated_user.login = phone
+                updated_user.Login = phone
         if password:
-                updated_user.password = email
+                updated_user.Password = email
         session.add(updatedBook)
         session.commit()
 
@@ -147,22 +147,22 @@ def update_user(id, first_name, last_name, login, password):
 def usersFunction():
         # list all contacts for user
         if request.method == 'GET':
-                return user_info(request.args.get('id', ''))
+                return user_info(request.args.get('ID', ''))
         elif request.method == 'POST':
-                first = request.args.get('first_name', '')
-                last = request.args.get('last_name', '')
-                login = request.args.get('login', '')
-                password = request.args.get('password', '')
+                first = request.args.get('FirstName', '')
+                last = request.args.get('LastName', '')
+                login = request.args.get('Login', '')
+                password = request.args.get('Password', '')
                 return create_new_user(first, last, login, password)
 
 # for updating User's personal information
 @app.route('/userApi/<int:id>', methods=['PUT'])
 def usersFunctionID(id):
         if request.method == 'PUT':
-                first = request.args.get('first_name', '')
-                last = request.args.get('last_name', '')
-                login = request.args.get('login', '')
-                password = request.args.get('password', '')
+                first = request.args.get('FirstName', '')
+                last = request.args.get('LastName', '')
+                login = request.args.get('Login', '')
+                password = request.args.get('Password', '')
                 return update_user(id, first, last, login, password)
 
 

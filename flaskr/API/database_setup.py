@@ -25,41 +25,41 @@ class User(Base):
         __tablename__ = 'Users' # or whatever table is called
 
 
-        id = Column(Integer, primary_key=True) # this is user_id in contacts table
-        first_name = Column(String(50), nullable=False)
-        last_name = Column(String(50), nullable=False)
-        login = Column(String(50))
-        password = Column(String(50), nullable=False)
+        ID = Column(Integer, primary_key=True) # this is user_id in contacts table
+        FirstName = Column(String(50), nullable=False)
+        LastName = Column(String(50), nullable=False)
+        Login = Column(String(50))
+        Password = Column(String(50), nullable=False)
 
         @property
         def serialize(self):
                 return {
-                        'FirstName': self.first_name,
-                        'LastName': self.last_name,
-                        'Login': self.login,
-                        'Password': self.password,
-                        'ID': self.id,
+                        'FirstName': self.FirstName,
+                        'LastName': self.LastName,
+                        'Login': self.Login,
+                        'Password': self.Password,
+                        'ID': self.ID,
                 }
 
 class Contact(Base):
         __tablename__ = 'Contacts'
 
-        id = Column(Integer, primary_key=True)
-        first_name = Column(String(50), nullable=False)
-        last_name = Column(String(50), nullable=False)
-        email = Column(String(80), nullable=False)
-        phone = Column(String(20), nullable=False)
-        user_id = Column(Integer, nullable=False)
+        ID = Column(Integer, primary_key=True)
+        FirstName = Column(String(50), nullable=False)
+        LastName = Column(String(50), nullable=False)
+        Email = Column(String(80), nullable=False)
+        PhoneNumber = Column(String(20), nullable=False)
+        UserID = Column(Integer, nullable=False)
 
         @property
         def serialize(self):
                 return{
-                        'FirstName' : self.first_name,
-                        'LastName' : self.last_name,
-                        'email' : self.email,
-                        'phone' : self.phone,
-                        'ID': self.id,
-                        'UserID' : self.user_id,
+                        'FirstName' : self.FirstName,
+                        'LastName' : self.LastName,
+                        'email' : self.Email,
+                        'phone' : self.PhoneNumber,
+                        'ID': self.ID,
+                        'UserID' : self.UserID,
                 }
 
 # creates a create_engine instance at the bottom of the file
