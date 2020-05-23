@@ -132,7 +132,7 @@ def update_user(id, first_name, last_name, login, password):
         if last_name:
                 updated_user.LastName = last_name
         if login:
-                updated_user.Login = phone
+                updated_user.Login = login
         if password:
                 updated_user.Password = email
         session.add(updatedBook)
