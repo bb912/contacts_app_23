@@ -158,7 +158,7 @@ def verifyPassword(login, password):
 	user_to_verify = session.query(User).filter_by(Login=login).one()
 
 	if user_to_verify is not None:
-		if hash_hex(password) is user_to_verify.Password:
+		if hash_hex(password) == user_to_verify.Password:
 
 			return jsonify(User=user_to_verify.serialize)
 			#return "Correct Password for %s" % login
