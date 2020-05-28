@@ -42,7 +42,7 @@ def create_new_contact(user_id, first_name, last_name, phone, email):
 														PhoneNumber=phone, Email=email, UserID=user_id)
 		session.add(added_contact)
 		session.commit()
-		return jsonify(Contact=added_contact.serialize)
+		return "Added contact with id %s" % added_contact.ID
 
 # delete contact by contact ID
 def delete_contact(id):
@@ -102,7 +102,7 @@ def contactsFunctionID(id):
 				phone = request.args.get('PhoneNumber', '')
 				email = request.args.get('Email', '')
 				user = request.args.get('UserID', '')
-				return update_contact(id, first, last, phone, email, user)
+				return update_contact(id, first, last, phone, email)
 
 		elif request.method == 'DELETE':
 				return delete_contact(id)
