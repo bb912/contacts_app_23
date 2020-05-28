@@ -7,7 +7,7 @@
   1. Update Id names each time document.getElementById() is called to match html code.
   2. Connect to API Endpoints.
 
-  Last updated: 5/28/2020, 8:00 AM
+  Last updated: 5/28/2020, 12:25 PM
 */
 
 var urlBase = 'https://cop433123.us/';
@@ -24,11 +24,13 @@ function doLogin()
 	lastName = "";
 
   // Retrieving login information.
+  //var email = document.getElementById("email").value;
 	var login = document.getElementById("loginName").value;
 	var password = document.getElementById("loginPassword").value;
 
   // Sets the innerHTML property to an empty string.
   document.getElementById("loginResult").innerHTML = "";
+  //var jsonPayload = '{"email" : "' + email + '", "login" : "' + login + '", "password" : "' + password + '"}';
   var jsonPayload = '{"login" : "' + login + '", "password" : "' + password + '"}';
   var url = urlBase + '/Login.' + extension;
 
@@ -123,7 +125,7 @@ function doLogout()
   // Prevents webpage from being cached
 	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
-  // Returns user to main page. Change filename.
+  // Returns user to main page. Change filename if necessary.
 	window.location.href = "index.html";
 }
 
@@ -215,6 +217,35 @@ function addContact()
 
 }
 
+function deleteContact()
+{
+  var del = document.getElementById("deleteText").value;
+  var jsonPayload = '{"delete" : "' + del + '","userId" : ' + userId + '}';
+  var url = urlBase + '/DeleteContact' + extension;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try
+  {
+    xhr.onreadystatechange = function()
+		{
+			if (this.readyState == 4 && this.status == 200)
+			{
+				document.getElementById("contactDeleteResult").innerHTML = "Contact successfully deleted";
+				var jsonObject = JSON.parse( xhr.responseText );
+			}
+		};
+    xhr.send(jsonPayload);
+  }
+  catch(err)
+  {
+    document.getElementById("contactDeleteResult").innerHTML = err.message;
+  }
+}
+
+// consider listboxes to view search results.
 function searchContact()
 {
   var srch = document.getElementById("searchText").value;
@@ -256,5 +287,4 @@ function searchContact()
 	{
 		document.getElementById("contactSearchResult").innerHTML = err.message;
 	}
-
 }
