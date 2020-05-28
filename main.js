@@ -1,17 +1,13 @@
 /* Main JavaScript code for contact manager web application. Note that a majority of the
   code is similar to the sample given in the LAMP stack demo. Most changes were made to
-  add() and search() functions. Additional functions need to be created to work with
+  add() and search() functions. Additional functions created to work with
   addContact() function.
 
   TO-DO:
   1. Update Id names each time document.getElementById() is called to match html code.
-  2. Edit addContact() function and add other functions to check validity of user input.
-  3. Edit searchContact() function that enables search through names, phones, and emails
-     by a given key.
-  4. Add comments to improve readability of the code.
-  5. Connect to API Endpoints.
+  2. Connect to API Endpoints.
 
-  Last updated: 5/22/2020, 1:10 PM
+  Last updated: 5/28/2020, 8:00 AM
 */
 
 var urlBase = 'https://cop433123.us/';
@@ -32,7 +28,7 @@ function doLogin()
 	var password = document.getElementById("loginPassword").value;
 
   // Sets the innerHTML property to an empty string.
-	document.getElementById("loginResult").innerHTML = "";
+  document.getElementById("loginResult").innerHTML = "";
   var jsonPayload = '{"login" : "' + login + '", "password" : "' + password + '"}';
   var url = urlBase + '/Login.' + extension;
 
@@ -48,7 +44,7 @@ function doLogin()
 	{
 		xhr.send(jsonPayload);
 
-    // JSON.parse() converts a string to an object
+    	// JSON.parse() converts response to a JSON object
 		var jsonObject = JSON.parse( xhr.responseText );
 		userId = jsonObject.id;
 
@@ -86,7 +82,7 @@ function readCookie()
 	userId = -1;
 	var data = document.cookie;
 
-  // splits and token store the firstName, lastName, userId in arrays.
+  // splits/token store the firstName, lastName, userId in arrays.
 	var splits = data.split(",");
 	for(var i = 0; i < splits.length; i++)
 	{
@@ -123,24 +119,15 @@ function doLogout()
 	userId = 0;
 	firstName = "";
 	lastName = "";
-  // prevents webpage from being cached
+
+  // Prevents webpage from being cached
 	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
-  // returns user to main page
+  // Returns user to main page. Change filename.
 	window.location.href = "index.html";
 }
 
 // The following functions include helper functions to validate user inputs.
-// Note that these still need to be implemented into the addContact() and
-// searchContact() functions.
-
-// Checks if a value is not empty, returns false if size 0, null, or undefined.
-function isNotEmpty(value)
-{
-  if(value == null || typeof value = 'undefined') return false;
-  return (value.length > 0);
-}
-
 // Checks if the user entered a valid email.
 function checkEmail(email)
 {
@@ -170,15 +157,15 @@ function checkPhone(phone)
 
 function addContact()
 {
-  var flag = false;
+  var valid = false;
+  var newFirst = document.getElementById("firstText").value();
+  var newLast = document.getElementById("lastText").value();
+  var newEmail = document.getElementById("emailText").value();
+  var newPhone = document.getElementById("phoneText").value();
 
   // Checks validity of user input before sending JSON payload.
-  while(flag === false)
+  while(valid === false)
   {
-    var newFirst = document.getElementById("firstText").value();
-    var newLast = document.getElementById("lastText").value();
-    var newEmail = document.getElementById("emailText").value();
-    var newPhone = document.getElementById("phoneText").value();
     if(!checkName(newFirst))
     {
       document.getElementById("addContactResult").innerHTML = "First name cannot be empty";
@@ -197,7 +184,7 @@ function addContact()
     }
     else
     {
-      flag = true;
+      valid = true;
     }
   }
 
@@ -241,6 +228,7 @@ function searchContact()
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
+  // try catch block to search for contacts.
   try
 	{
 		xhr.onreadystatechange = function()
