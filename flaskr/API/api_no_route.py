@@ -87,7 +87,7 @@ def contactsFunction():
 				phone = request.args.get('PhoneNumber', '')
 				email = request.args.get('Email', '')
 				user = request.args.get('UserID', '')
-				return create_new_contact(first, last, phone, email, user)
+				return create_new_contact(user, first, last, phone, email)
 
 
 # get a specific contact by contact ID, or update contact, or delete contact
