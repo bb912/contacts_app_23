@@ -121,14 +121,17 @@ def create_new_user(first_name, last_name, login, password):
 		same_user_name = session.query(User).filter_by(Login=login).count()
 
 		if same_user_name > 0:
-			return "Username is already in Use, Please Choose another"
+			return "Username is already in Use, Please Choose another", 409
 
 		hash_pass = hash_hex(password)
 
 		added_user = User(FirstName=first_name,LastName=last_name,Login=login,Password=hash_pass)
 		session.add(added_user)
 		session.commit()
-		return jsonify(User=added_user.serialize)
+
+		return "Added user with ID %s" % added_user.ID, 200
+
+		#return jsonify(User=added_user.serialize)
 
 
 
