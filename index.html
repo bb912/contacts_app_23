@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<!--sets html to english language, formats characters, width and height
+image' scale fixed, links the .css file (edited fonts and bottoms) to the
+.html file-->
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Contact Design Page 1</title>
+		<link rel="stylesheet" href="style.css">
+ 		<!--get the font style from jquery-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+		</script>
+		<script>
+			$(document).ready(function(){
+				$(".login-form").hide();
+				$(".login").css("background","none");
+
+				$(".login").click(function(){
+					$(".signup-form").hide();
+					$(".login-form").show();
+					$(".signup").css("background","none")
+					$(".login").css("background","#fff");
+				});
+				$(".signup").click(function(){
+					$(".signup-form").show();
+					$(".login-form").hide();
+					$(".signup").css("background","#fff")
+					$(".login").css("background","none");
+				});
+				$(".btn").click(function(){
+					$(".input").val("");
+				});
+			});
+		</script>
+
+	</head>
+
+	<body>
+	<div class="wrapper">
+    <div class="container">
+
+	<div class="signup">sign Up</div>
+      <div class="login">log In</div>
+
+       <div class="signup-form">
+          <input type="text" placeholder="Your Email Address" class="input"><br />
+          <input type="text" placeholder="Choose a Username" class="input"><br />
+          <input type="password" placeholder="Choose a Password" class="input"><br />
+          <div class="btn">Create account</div>
+       </div>
+
+      <div class="login-form">
+          <input type="text" class="input" placeholder="Email or Username" ><br />
+          <input type="password" class="input" placeholder="Password"><br />
+          <div class="btn"><a href="html2.html">log in</a></div>
+
+          <span><a href="#">I forgot my username or password.</a></span>
+
+       </div>
+
+    </div>
+  </div>
+
+	</body>
+</html>
