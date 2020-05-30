@@ -13,54 +13,78 @@
 var urlBase = 'https://cop433123.us/';
 var extension = 'py';
 
-var userID = 0;
+var userId = 0;
 var firstName = "";
 var lastName = "";
 
+// Need to update html to have fields to enter firstName & lastName
+// Update button onclick to send XMLHTTPRequest.
+function signUp()
+{
+  // var button = document.getElementById("btn");
+  var first = document.getElementById("firstText").value();
+  var last = document.getElementById("lastText").value();
+  var user = document.getElementById("username").value();
+  var pass = document.getElementById("password").value();
+
+  var jsonPayload = '{"ID": ' + userId + ', "FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '}';
+  //console.log(jsonPayload);
+	var url = urlBase + '/userAPI.' + extension;
+	var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  try
+  {
+    xhr.onreadystatechange = function()
+	  {
+			if (this.readyState == 4 && this.status == 201)
+			{
+        document.getElementById("newUserResult").innerHTML = "Account successfully created";
+			}
+		};
+    xhr.send(jsonPayload);
+    }
+    catch(err)
+    {
+        document.getElementById("newUserResult").innerHTML = err.message;
+    }
+}
+
+// check GET for user class. Fix how userID is requested and stored.
 function doLogin()
 {
-  userId = 0;
+	//userId = 0;
 	firstName = "";
 	lastName = "";
 
-  // Retrieving login information.
+  // Retrieving login information. Update IDs to match html.
   //var email = document.getElementById("email").value;
 	var login = document.getElementById("loginName").value;
 	var password = document.getElementById("loginPassword").value;
 
-  // Sets the innerHTML property to an empty string.
   document.getElementById("loginResult").innerHTML = "";
   //var jsonPayload = '{"email" : "' + email + '", "login" : "' + login + '", "password" : "' + password + '"}';
-  var jsonPayload = '{"login" : "' + login + '", "password" : "' + password + '"}';
-  var url = urlBase + '/Login.' + extension;
+  var jsonPayload = '{"Login" : "' + login + '", "Password" : "' + password + '"}';
+  var url = urlBase + '/userAPI/login.' + extension;
 
-  // Transferring data from front end to API.
+  	// Transferring data from front end to API.
 	var xhr = new XMLHttpRequest();
 
-  // Since false, any xhr.send() calls do not return until a response is achieved.
-	xhr.open("POST", url, false);
+  	// Since false, any xhr.send() calls do not return until a response is achieved.
+	xhr.open("GET", url, false);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
   // Checking if the user entered a valid user/password combination.
   try
 	{
 		xhr.send(jsonPayload);
-
-    	// JSON.parse() converts response to a JSON object
-		var jsonObject = JSON.parse( xhr.responseText );
-		userId = jsonObject.id;
-
-		if(userId < 1)
-		{
-			document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-			return;
-		}
-
-		firstName = jsonObject.firstName;
-		lastName = jsonObject.lastName;
+		var jsonObject = JSON.parse(xhr.responseText);
+		//userId = jsonObject.id;
+		//firstName = jsonObject.firstName;
+		//lastName = jsonObject.lastName;
 		saveCookie();
 
-    // change to appropriate filename
+    // change to appropriate filename of second page
 		window.location.href = "contactApp.html";
 	}
 
@@ -91,21 +115,21 @@ function readCookie()
     // Removing whitespace.
 		var thisOne = splits[i].trim();
 		var tokens = thisOne.split("=");
-		if( tokens[0] == "firstName" )
+		if (tokens[0] == "firstName")
 		{
 			firstName = tokens[1];
 		}
-		else if( tokens[0] == "lastName" )
+		else if(tokens[0] == "lastName")
 		{
 			lastName = tokens[1];
 		}
-		else if( tokens[0] == "userId" )
+		else if(tokens[0] == "userId")
 		{
-			userId = parseInt( tokens[1].trim() );
+			userId = parseInt(tokens[1].trim());
 		}
 	}
 
-  // Returns to homepage. Otherwise successful login.
+  	// Returns to homepage. Otherwise successful login.
 	if( userId < 0 )
 	{
 		window.location.href = "index.html";
@@ -130,7 +154,6 @@ function doLogout()
 }
 
 // The following functions include helper functions to validate user inputs.
-// Checks if the user entered a valid email.
 function checkEmail(email)
 {
   // A regex used to check for a valid email address.
@@ -139,7 +162,8 @@ function checkEmail(email)
 }
 function checkName(name)
 {
-  if(name.length < 1)
+  var re = /^[a-zA-Z]+ [a-zA-Z]+$/;
+  if(name.length < 1 || !re.test(name))
   {
     return false;
   }
@@ -190,10 +214,10 @@ function addContact()
     }
   }
 
-  var jsonPayload = '{"firstName" : "' + newFirst + '", "lastName" : "' + newLast + '", "email" : "' + newEmail + '","phone" : "' + newPhone + '","userId" : ' + userId + '}';
+  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '","UserId" : ' + userId + '}';
 
   // Edit name to match with API python file.
-  var url = urlBase + '/AddContact.' + extension;
+  var url = urlBase + '/contactsApi.' + extension;
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
@@ -217,14 +241,15 @@ function addContact()
 
 }
 
+// update jsonPayload to match API
 function deleteContact()
 {
   var del = document.getElementById("deleteText").value;
   var jsonPayload = '{"delete" : "' + del + '","userId" : ' + userId + '}';
-  var url = urlBase + '/DeleteContact' + extension;
+  var url = urlBase + '/contactsApi/<int:ID>' + extension;
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
+  xhr.open("DELETE", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
   try
@@ -245,46 +270,80 @@ function deleteContact()
   }
 }
 
-// consider listboxes to view search results.
+function createArray(json)
+{
+  var allNames = [json.FirstName].join(" ");
+  return allNames;
+}
+// Creates list of contacts using array of names from JSON object. 
+// Not sure if the list should already be created by html, or here.
+function createList(json)
+{
+  var myObj = json.map(createArray);
+  // Id is the same as in search() function.
+  for(var i = 0; i < myObj.length; i++)
+  {
+    var node = document.createElement("li");
+    var textnode = document.createTextNode(myObj[i]);
+    node.appendChild(textnode);
+    document.getElementById('contactUL').appendChild(node);
+  }
+}
+
+// General search function, uses <ul> to display results in unordered list.
+// Function assumes that an <ul> already exists with some <li> elements.
+// Currently works on its own, need to test function with createList(json).
+function search()
+{
+  var input, filter, ul, li, a, txtValue;
+  input = document.getElementById("searchContact");
+  filter = input.value.toLowerCase();
+
+  ul = document.getElementById("contactUL");
+  li = ul.getElementsByTagName("li");
+
+  // Looping through all list items (contact names). Items that don't
+  // match are hidden
+  for (var i = 0; i < li.length; i++)
+  {
+    // may or may not need to change "a"
+    a = li[i].getElementsByTagName("a")[0];
+    txtValue = a.textContent || a.innerText;
+
+    // List items are only displayed if partial string exists in list.
+    if (txtValue.toLowerCase().indexOf(filter) > -1)
+    {
+      li[i].style.display = "";
+    }
+    else
+    {
+      li[i].style.display = "none";
+    }
+  }
+}
+
 function searchContact()
 {
-  var srch = document.getElementById("searchText").value;
-  document.getElementById("contactSearchResult").innerHTML = "";
-
-  var contactList = "";
-  var jsonPayload = '{"search" : "' + srch + '","userId" : ' + userId + '}';
-	var url = urlBase + '/SearchContacts.' + extension;
-
+  //document.getElementById("contactSearchResult").innerHTML = "";
   var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-  // try catch block to search for contacts.
-  try
+  xhr.open("GET", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.onreadystatechange = function()
+  {
+	try
 	{
-		xhr.onreadystatechange = function()
-		{
-			if (this.readyState == 4 && this.status == 200)
-			{
-				document.getElementById("contactSearchResult").innerHTML = "Contact(s) has been retrieved";
-				var jsonObject = JSON.parse( xhr.responseText );
-
-				for( var i = 0; i < jsonObject.results.length; i++ )
-				{
-					contactList += jsonObject.results[i];
-					if( i < jsonObject.results.length - 1 )
-					{
-						contactList += "<br />\r\n";
-					}
-				}
-
-				document.getElementsByTagName("p")[0].innerHTML = contactList;
-			}
-		};
-		xhr.send(jsonPayload);
+      if (this.readyState == 4 && this.status == 200)
+	  {
+        var jsonPayload = JSON.parse(xhr.responseText);
+        createList(jsonPayload);
+        search();
+        xhr.send();
+	  }
 	}
-	catch(err)
-	{
+  	catch(err)
+  	{
 		document.getElementById("contactSearchResult").innerHTML = err.message;
-	}
+  	}
+  };
+
 }
