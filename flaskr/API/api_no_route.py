@@ -5,6 +5,7 @@ import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
+from gevent.pywsgi import WSGIServer
 
 # Connect to Database and create database session
 engine = create_engine('mysql+mysqlconnector://cop43312_db:accessMyData@localhost:3306/cop43312_database')
@@ -212,5 +213,7 @@ def usersFunctionID(id):
 
 if __name__ == '__main__':
 		pymysql.install_as_MySQLdb()
-		app.debug = True
-		app.run(host='0.0.0.0', port=4996)
+		app.debug = False
+		http_server = WSGIServer(('', 4996), app)
+		http_server.serve_forever()
+		#app.run(host='0.0.0.0', port=4996)
