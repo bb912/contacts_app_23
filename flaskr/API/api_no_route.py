@@ -64,7 +64,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 				updated_contact.PhoneNumber = phone
 		if email:
 				updated_contact.Email = email
-		session.add(updatedBook)
+		session.add(updated_contact)
 		session.commit()
 
 		return "Updated contact with id %s" % contact_id

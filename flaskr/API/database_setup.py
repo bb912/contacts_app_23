@@ -53,7 +53,7 @@ class Contact(Base):
 
         @property
         def serialize(self):
-                return{
+                return {
                         'FirstName' : self.FirstName,
                         'LastName' : self.LastName,
                         'email' : self.Email,
