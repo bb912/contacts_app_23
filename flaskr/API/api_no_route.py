@@ -109,12 +109,13 @@ def contactsFunctionID(id):
 				return delete_contact(id)
 
 @app.route('/contactsApi/search', methods=['GET'])
-def searchFunctionID(id):
+def searchFunctionID():
 
 	search_term = request.args.get('SearchTerm', '')
 	user = request.args.get('UserID', '')
 
-	return get_searched_contacts(search_term)
+	return get_searched_contacts(search_term, user)
+
 
 def get_searched_contacts(search_term, user):
 
@@ -124,7 +125,7 @@ def get_searched_contacts(search_term, user):
 	return jsonify(Contact=[c.serialize for c in contacts_for_user])
 
 
-	
+
 
 '''
 USER API
