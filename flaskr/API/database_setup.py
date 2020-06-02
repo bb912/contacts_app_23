@@ -37,7 +37,7 @@ class User(Base):
                         'FirstName': self.FirstName,
                         'LastName': self.LastName,
                         'Login': self.Login,
-                        'Password': self.Password,
+                        #'Password': self.Password, We should never be sharing this password with frontend
                         'ID': self.ID,
                 }
 
@@ -53,7 +53,7 @@ class Contact(Base):
 
         @property
         def serialize(self):
-                return{
+                return {
                         'FirstName' : self.FirstName,
                         'LastName' : self.LastName,
                         'email' : self.Email,

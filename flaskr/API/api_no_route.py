@@ -5,6 +5,7 @@ import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
+from gevent.pywsgi import WSGIServer
 
 # Connect to Database and create database session
 engine = create_engine('mysql+mysqlconnector://cop43312_db:accessMyData@localhost:3306/cop43312_database')
@@ -63,7 +64,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 				updated_contact.PhoneNumber = phone
 		if email:
 				updated_contact.Email = email
-		session.add(updatedBook)
+		session.add(updated_contact)
 		session.commit()
 
 		return "Updated contact with id %s" % contact_id
@@ -121,14 +122,17 @@ def create_new_user(first_name, last_name, login, password):
 		same_user_name = session.query(User).filter_by(Login=login).count()
 
 		if same_user_name > 0:
-			return "Username is already in Use, Please Choose another"
+			return "Username is already in Use, Please Choose another", 409
 
 		hash_pass = hash_hex(password)
 
 		added_user = User(FirstName=first_name,LastName=last_name,Login=login,Password=hash_pass)
 		session.add(added_user)
 		session.commit()
-		return jsonify(User=added_user.serialize)
+
+		return "Added user with ID %s" % added_user.ID, 200
+
+		#return jsonify(User=added_user.serialize)
 
 
 
@@ -209,5 +213,7 @@ def usersFunctionID(id):
 
 if __name__ == '__main__':
 		pymysql.install_as_MySQLdb()
-		app.debug = True
-		app.run(host='0.0.0.0', port=4996)
+		app.debug = False
+		http_server = WSGIServer(('', 4996), app)
+		http_server.serve_forever()
+		#app.run(host='0.0.0.0', port=4996)
