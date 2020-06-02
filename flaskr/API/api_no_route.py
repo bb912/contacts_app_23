@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 import hashlib
 app = Flask(__name__)
 import pymysql
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
 from gevent.pywsgi import WSGIServer
@@ -108,6 +108,23 @@ def contactsFunctionID(id):
 		elif request.method == 'DELETE':
 				return delete_contact(id)
 
+@app.route('/contactsApi/search', methods=['GET'])
+def searchFunctionID(id):
+
+	search_term = request.args.get('SearchTerm', '')
+	user = request.args.get('UserID', '')
+
+	return get_searched_contacts(search_term)
+
+def get_searched_contacts(search_term, user):
+
+	contacts_for_user = \
+		session.query(Contact).filter_by(UserID=user).filter(or_(Contact.FirstName.like(search_term), Contact.LastName.like(search_term), Contact.PhoneNumber.like(search_term), Contact.Email.like(search_term)))
+
+	return jsonify(Contact=[c.serialize for c in contacts_for_user])
+
+
+	
 
 '''
 USER API
