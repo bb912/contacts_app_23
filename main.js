@@ -22,19 +22,19 @@ var lastName = "";
 function signUp()
 {
   // var button = document.getElementById("btn");
-  var first = document.getElementById("firstText").value();
-  var last = document.getElementById("lastText").value();
-  var user = document.getElementById("username").value();
-  var pass = document.getElementById("password").value();
-
-  var jsonPayload = '{"ID": ' + userId + ', "FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '}';
-  //console.log(jsonPayload);
-	var url = urlBase + '/userAPI.' + extension;
+  var first = document.getElementById("firstText").value;
+  var last = document.getElementById("lastText").value;
+  var user = document.getElementById("username").value;
+  var pass = document.getElementById("password").value;
+  var jsonPayload = '{"FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '}';
+  var url = urlBase + '/userAPI.' + extension;
 	var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   try
   {
+    xhr.send(jsonPayload);
+    var jsonObject = JSON.parse(xhr.responseText);
     xhr.onreadystatechange = function()
 	  {
 			if (this.readyState == 4 && this.status == 201)
@@ -42,7 +42,6 @@ function signUp()
         document.getElementById("newUserResult").innerHTML = "Account successfully created";
 			}
 		};
-    xhr.send(jsonPayload);
     }
     catch(err)
     {
@@ -50,20 +49,18 @@ function signUp()
     }
 }
 
-// check GET for user class. Fix how userID is requested and stored.
+// Logging in existing user. Returns to main page if request unsuccessful.
 function doLogin()
 {
-	//userId = 0;
+	userId = 0;
 	firstName = "";
 	lastName = "";
 
   // Retrieving login information. Update IDs to match html.
-  //var email = document.getElementById("email").value;
-	var login = document.getElementById("loginName").value;
-	var password = document.getElementById("loginPassword").value;
+  var login = document.getElementById("loginName").value;
+  var password = document.getElementById("loginPassword").value;
 
   document.getElementById("loginResult").innerHTML = "";
-  //var jsonPayload = '{"email" : "' + email + '", "login" : "' + login + '", "password" : "' + password + '"}';
   var jsonPayload = '{"Login" : "' + login + '", "Password" : "' + password + '"}';
   var url = urlBase + '/userAPI/login.' + extension;
 
@@ -79,13 +76,10 @@ function doLogin()
 	{
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
-		//userId = jsonObject.id;
-		//firstName = jsonObject.firstName;
-		//lastName = jsonObject.lastName;
+
 		saveCookie();
 
-    // change to appropriate filename of second page
-		window.location.href = "contactApp.html";
+		window.location.href = "html2.html";
 	}
 
 	catch(err)
@@ -178,31 +172,24 @@ function checkPhone(phone)
   // 123.456.7890
   // 123 456 7890
   var re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  return re.test(phone);
 }
 // end of helper functions
 
 function addContact()
 {
   var valid = false;
-  var newFirst = document.getElementById("firstText").value();
-  var newLast = document.getElementById("lastText").value();
-  var newEmail = document.getElementById("emailText").value();
-  var newPhone = document.getElementById("phoneText").value();
+  var newFirst = document.getElementById("firstText").value;
+  var newLast = document.getElementById("lastText").value;
+  var newEmail = document.getElementById("emailText").value;
+  var newPhone = document.getElementById("phoneText").value;
 
   // Checks validity of user input before sending JSON payload.
   while(valid === false)
   {
-    if(!checkName(newFirst))
+    if(!checkEmail(newEmail))
     {
-      document.getElementById("addContactResult").innerHTML = "First name cannot be empty";
-    }
-    else if(!checkName(newLast))
-    {
-      document.getElementById("addContactResult").innerHTML = "Last name cannot be empty";
-    }
-    else if(!checkEmail(newEmail))
-    {
-      document.getElementById("addContactResult").innerHTML = "Invalid email address";
+      document.getElementById("addContactResult").innerHTML = "Invalid email";
     }
     else if(!checkPhone(newPhone))
     {
@@ -214,7 +201,7 @@ function addContact()
     }
   }
 
-  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '","UserId" : ' + userId + '}';
+  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '}';
 
   // Edit name to match with API python file.
   var url = urlBase + '/contactsApi.' + extension;
@@ -238,8 +225,8 @@ function addContact()
 	{
 		document.getElementById("contactAddResult").innerHTML = err.message;
 	}
-
 }
+
 
 // update jsonPayload to match API
 function deleteContact()
@@ -292,7 +279,6 @@ function createList(json)
 
 // General search function, uses <ul> to display results in unordered list.
 // Function assumes that an <ul> already exists with some <li> elements.
-// Currently works on its own, need to test function with createList(json).
 function search()
 {
   var input, filter, ul, li, a, txtValue;
@@ -306,7 +292,6 @@ function search()
   // match are hidden
   for (var i = 0; i < li.length; i++)
   {
-    // may or may not need to change "a"
     a = li[i].getElementsByTagName("a")[0];
     txtValue = a.textContent || a.innerText;
 
@@ -325,21 +310,22 @@ function search()
 function searchContact()
 {
   //document.getElementById("contactSearchResult").innerHTML = "";
+  var url = urlBase + '/contactsApi.' + extension; 
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   xhr.onreadystatechange = function()
   {
-	try
-	{
-      if (this.readyState == 4 && this.status == 200)
+	  try
 	  {
+      if (this.readyState == 4 && this.status == 200)
+	    {
         var jsonPayload = JSON.parse(xhr.responseText);
         createList(jsonPayload);
         search();
-        xhr.send();
+        xhr.send(jsonPayload);
+	    }
 	  }
-	}
   	catch(err)
   	{
 		document.getElementById("contactSearchResult").innerHTML = err.message;
