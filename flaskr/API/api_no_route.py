@@ -79,7 +79,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 # LISTING ALL CONTACTS OR ADDING A CONTACT FOR A USER
 @app.route('/')
 @app.route('/contactsApi', methods=['GET', 'POST'])
-@cross_origin()
+#@cross_origin()
 def contactsFunction():
 		# list all contacts for user
 		if request.method == 'GET':
@@ -95,7 +95,7 @@ def contactsFunction():
 
 # get a specific contact by contact ID, or update contact, or delete contact
 @app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-@cross_origin()
+#@cross_origin()
 def contactsFunctionID(id):
 		if request.method == 'GET':
 				return get_contact(id)
@@ -112,7 +112,7 @@ def contactsFunctionID(id):
 				return delete_contact(id)
 
 @app.route('/contactsApi/search', methods=['GET'])
-@cross_origin()
+#@cross_origin()
 def searchFunctionID():
 
 	search_term = request.args.get('SearchTerm', '')
@@ -202,7 +202,7 @@ def verifyPassword(login, password):
 # either get the user's personal info or create a new user
 @app.route('/')
 @app.route('/userApi', methods=['GET', 'POST'])
-@cross_origin()
+#@cross_origin()
 def usersFunction():
 		# list all contacts for user
 		if request.method == 'GET':
@@ -219,7 +219,7 @@ def usersFunction():
 
 @app.route('/')
 @app.route('/userApi/login', methods=['GET'])
-@cross_origin()
+#@cross_origin()
 def userLogin():
 
 	# for logging in
@@ -229,7 +229,7 @@ def userLogin():
 
 # for updating User's personal information
 @app.route('/userApi/<int:id>', methods=['PUT'])
-@cross_origin()
+#@cross_origin()
 def usersFunctionID(id):
 		if request.method == 'PUT':
 				first = request.args.get('FirstName', '')
