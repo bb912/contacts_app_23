@@ -117,8 +117,8 @@ def contactsFunctionID(id):
 #@cross_origin()
 def searchFunctionID():
 
-	search_term = request.args.get('SearchTerm', '')
-	user = request.args.get('UserID', '')
+	search_term = request.args.get('SearchTerm')
+	user = request.args.get('UserID')
 
 	return get_searched_contacts(search_term, user)
 
