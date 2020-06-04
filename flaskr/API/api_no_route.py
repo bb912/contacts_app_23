@@ -133,8 +133,8 @@ def get_searched_contacts(search_term, user):
 				Contact.PhoneNumber.like(search_term), \
 				Contact.Email.like(search_term)))
 
-	return jsonify(Contact=[c.serialize for c in contacts_for_user])
-
+	#return jsonify(Contact=[c.serialize for c in contacts_for_user])
+	return jsonify({idx: c.serialize for c, idx in enumerate(contacts_for_user)})
 
 
 
