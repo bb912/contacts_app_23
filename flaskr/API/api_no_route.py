@@ -124,13 +124,14 @@ def searchFunctionID():
 
 def get_searched_contacts(search_term, user):
 
+	search_term = "{}%".format(search_term)
+
 	contacts_for_user = \
-		session.query(Contact).filter( \
-				Contact.UserID == user & \
-				(Contact.FirstName.startswith(search_term) | \
-				Contact.LastName.startswith(search_term) | \
-				Contact.PhoneNumber.startswith(search_term) | \
-				Contact.Email.startswith(search_term)))
+		session.query(Contact).filter_by(UserID=user).filter( \
+			or_(Contact.FirstName.like(search_term), \
+				Contact.LastName.like(search_term), \
+				Contact.PhoneNumber.like(search_term), \
+				Contact.Email.like(search_term)))
 
 	return jsonify(Contact=[c.serialize for c in contacts_for_user])
 
