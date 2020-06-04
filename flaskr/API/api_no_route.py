@@ -126,10 +126,11 @@ def get_searched_contacts(search_term, user):
 
 	contacts_for_user = \
 		session.query(Contact).filter_by(UserID=user).filter( \
-				Contact.FirstName.startswith(search_term) | \
+				Contact.UserID == user & \
+				(Contact.FirstName.startswith(search_term) | \
 				Contact.LastName.startswith(search_term) | \
 				Contact.PhoneNumber.startswith(search_term) | \
-				Contact.Email.startswith(search_term)).all()
+				Contact.Email.startswith(search_term)))
 
 	return jsonify(Contact=[c.serialize for c in contacts_for_user])
 
