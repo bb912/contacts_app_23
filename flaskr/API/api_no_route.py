@@ -131,7 +131,7 @@ def get_searched_contacts(search_term, user):
 				Contact.FirstName.ilike(search_term) |
 				Contact.LastName.ilike(search_term) |
 				Contact.PhoneNumber.ilike(search_term) |
-				Contact.Email.ilike(search_term)))
+				Contact.Email.ilike(search_term)).all()
 
 	return jsonify(Contact=[c.serialize for c in contacts_for_user])
 
