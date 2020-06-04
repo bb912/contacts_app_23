@@ -84,7 +84,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 #@cross_origin()
 def contactsFunction():
 
-		body = request.get_json()
+		body = request.form
 
 
 		# list all contacts for user
@@ -111,7 +111,7 @@ def contactsFunctionID(id):
 
 		elif request.method == 'PUT':
 
-				body = request.get_json()
+				body = request.form
 
 				first = body.get('FirstName', '')
 				last = body.get('LastName', '')
@@ -127,7 +127,7 @@ def contactsFunctionID(id):
 #@cross_origin()
 def searchFunctionID():
 
-	body = request.get_json()
+	body = request.form
 
 
 	search_term = body.get('SearchTerm')
@@ -221,7 +221,7 @@ def verifyPassword(login, password):
 #@cross_origin()
 def usersFunction():
 
-		body = request.get_json()
+		body = request.form
 
 		# list all contacts for user
 		if request.method == 'GET':
@@ -241,7 +241,7 @@ def usersFunction():
 #@cross_origin()
 def userLogin():
 
-	body = request.get_json()
+	body = request.form
 
 	# for logging in
 	if request.method == 'GET':
@@ -252,7 +252,7 @@ def userLogin():
 @app.route('/userApi/<int:id>', methods=['PUT'])
 #@cross_origin()
 def usersFunctionID(id):
-		body = request.get_json()
+		body = request.form
 
 		if request.method == 'PUT':
 				first = body.get('FirstName', '')
