@@ -1,6 +1,6 @@
+
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import hashlib
-app = Flask(__name__)
 import pymysql
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +8,7 @@ from database_setup import Base, User, Contact
 from gevent.pywsgi import WSGIServer
 from flask_cors import CORS
 
+app = Flask(__name__)
 # Connect to Database and create database session
 engine = create_engine('mysql+mysqlconnector://cop43312_db:accessMyData@localhost:3306/cop43312_database')
 Base.metadata.bind = engine
@@ -120,7 +121,6 @@ def searchFunctionID():
 	user = request.args.get('UserID', '')
 
 	return get_searched_contacts(search_term, user)
-
 
 def get_searched_contacts(search_term, user):
 
