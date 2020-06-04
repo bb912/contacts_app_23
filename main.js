@@ -39,7 +39,7 @@ function signUp()
     //var jsonObject = JSON.parse(xhr.responseText);
     xhr.onreadystatechange = function () {
       alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
-			  if (status === 0 || (status >= 200 && status < 400))
+			  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 			  {
           document.getElementById("signupmessage").innerHTML = "Account successfully created";
         }
