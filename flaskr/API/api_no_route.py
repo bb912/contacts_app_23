@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 import hashlib
 app = Flask(__name__)
 import pymysql
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
 from gevent.pywsgi import WSGIServer
+from flask_cors import CORS
 
 # Connect to Database and create database session
 engine = create_engine('mysql+mysqlconnector://cop43312_db:accessMyData@localhost:3306/cop43312_database')
@@ -13,10 +14,10 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
+CORS(app)
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found():
 		return make_response(jsonify({'error': 'Not found'}), 404)
 
 
@@ -56,6 +57,7 @@ def delete_contact(id):
 # update an existing contact
 def update_contact(contact_id, first_name, last_name, phone, email):
 		updated_contact = session.query(Contact).filter_by(ID=contact_id).one()
+
 		if first_name:
 				updated_contact.FirstName = first_name
 		if last_name:
@@ -78,6 +80,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 # LISTING ALL CONTACTS OR ADDING A CONTACT FOR A USER
 @app.route('/')
 @app.route('/contactsApi', methods=['GET', 'POST'])
+#@cross_origin()
 def contactsFunction():
 		# list all contacts for user
 		if request.method == 'GET':
@@ -93,6 +96,7 @@ def contactsFunction():
 
 # get a specific contact by contact ID, or update contact, or delete contact
 @app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+#@cross_origin()
 def contactsFunctionID(id):
 		if request.method == 'GET':
 				return get_contact(id)
@@ -107,6 +111,29 @@ def contactsFunctionID(id):
 
 		elif request.method == 'DELETE':
 				return delete_contact(id)
+
+@app.route('/contactsApi/search', methods=['GET'])
+#@cross_origin()
+def searchFunctionID():
+
+	search_term = request.args.get('SearchTerm', '')
+	user = request.args.get('UserID', '')
+
+	return get_searched_contacts(search_term, user)
+
+
+def get_searched_contacts(search_term, user):
+
+	contacts_for_user = \
+		session.query(Contact).filter_by(UserID=user).filter( \
+			or_(Contact.FirstName.like(search_term + '%'), \
+				Contact.LastName.like(search_term + '%'), \
+				Contact.PhoneNumber.like(search_term + '%'), \
+				Contact.Email.like(search_term + '%')))
+
+	return jsonify(Contact=[c.serialize for c in contacts_for_user])
+
+
 
 
 '''
@@ -176,6 +203,7 @@ def verifyPassword(login, password):
 # either get the user's personal info or create a new user
 @app.route('/')
 @app.route('/userApi', methods=['GET', 'POST'])
+#@cross_origin()
 def usersFunction():
 		# list all contacts for user
 		if request.method == 'GET':
@@ -192,6 +220,7 @@ def usersFunction():
 
 @app.route('/')
 @app.route('/userApi/login', methods=['GET'])
+#@cross_origin()
 def userLogin():
 
 	# for logging in
@@ -201,6 +230,7 @@ def userLogin():
 
 # for updating User's personal information
 @app.route('/userApi/<int:id>', methods=['PUT'])
+#@cross_origin()
 def usersFunctionID(id):
 		if request.method == 'PUT':
 				first = request.args.get('FirstName', '')
@@ -215,5 +245,11 @@ if __name__ == '__main__':
 		pymysql.install_as_MySQLdb()
 		app.debug = False
 		http_server = WSGIServer(('', 4996), app)
-		http_server.serve_forever()
+
+		while True:
+			try:
+				http_server.serve_forever()
+			except:
+				not_found()
+				Session.rollback()
 		#app.run(host='0.0.0.0', port=4996)
