@@ -125,7 +125,7 @@ def searchFunctionID():
 def get_searched_contacts(search_term, user):
 
 	contacts_for_user = \
-		session.query(Contact).filter_by(UserID=user).filter( \
+		session.query(Contact).filter( \
 				Contact.UserID == user & \
 				(Contact.FirstName.startswith(search_term) | \
 				Contact.LastName.startswith(search_term) | \
