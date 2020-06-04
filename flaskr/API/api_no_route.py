@@ -83,15 +83,22 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 @app.route('/contactsApi', methods=['GET', 'POST'])
 #@cross_origin()
 def contactsFunction():
+
+		body = request.get_json()
+
+
 		# list all contacts for user
 		if request.method == 'GET':
-				return get_contacts(request.args.get('UserID', ''))
+				return get_contacts(body.get('UserID', ''))
 		elif request.method == 'POST':
-				first = request.args.get('FirstName', '')
-				last = request.args.get('LastName', '')
-				phone = request.args.get('PhoneNumber', '')
-				email = request.args.get('Email', '')
-				user = request.args.get('UserID', '')
+
+
+
+				first = body.get('FirstName', '')
+				last = body.get('LastName', '')
+				phone = body.get('PhoneNumber', '')
+				email = body.get('Email', '')
+				user = body.get('UserID', '')
 				return create_new_contact(user, first, last, phone, email)
 
 
@@ -103,11 +110,14 @@ def contactsFunctionID(id):
 				return get_contact(id)
 
 		elif request.method == 'PUT':
-				first = request.args.get('FirstName', '')
-				last = request.args.get('LastName', '')
-				phone = request.args.get('PhoneNumber', '')
-				email = request.args.get('Email', '')
-				user = request.args.get('UserID', '')
+
+				body = request.get_json()
+
+				first = body.get('FirstName', '')
+				last = body.get('LastName', '')
+				phone = body.get('PhoneNumber', '')
+				email = body.get('Email', '')
+				user = body.get('UserID', '')
 				return update_contact(id, first, last, phone, email)
 
 		elif request.method == 'DELETE':
@@ -117,8 +127,11 @@ def contactsFunctionID(id):
 #@cross_origin()
 def searchFunctionID():
 
-	search_term = request.args.get('SearchTerm')
-	user = request.args.get('UserID')
+	body = request.get_json()
+
+
+	search_term = body.get('SearchTerm')
+	user = body.get('UserID')
 
 	return get_searched_contacts(search_term, user)
 
@@ -207,16 +220,19 @@ def verifyPassword(login, password):
 @app.route('/userApi', methods=['GET', 'POST'])
 #@cross_origin()
 def usersFunction():
+
+		body = request.get_json()
+
 		# list all contacts for user
 		if request.method == 'GET':
-				return user_info(request.args.get('ID', ''))
+				return user_info(body.get('ID', ''))
 
 		# for registering
 		elif request.method == 'POST':
-				first = request.args.get('FirstName', '')
-				last = request.args.get('LastName', '')
-				login = request.args.get('Login', '')
-				password = request.args.get('Password', '')
+				first = body.get('FirstName', '')
+				last = body.get('LastName', '')
+				login = body.get('Login', '')
+				password = body.get('Password', '')
 				return create_new_user(first, last, login, password)
 
 
@@ -225,20 +241,24 @@ def usersFunction():
 #@cross_origin()
 def userLogin():
 
+	body = request.get_json()
+
 	# for logging in
 	if request.method == 'GET':
-		return verifyPassword(request.args.get('Login'), request.args.get('Password'))
+		return verifyPassword(body.get('Login'), body.get('Password'))
 
 
 # for updating User's personal information
 @app.route('/userApi/<int:id>', methods=['PUT'])
 #@cross_origin()
 def usersFunctionID(id):
+		body = request.get_json()
+
 		if request.method == 'PUT':
-				first = request.args.get('FirstName', '')
-				last = request.args.get('LastName', '')
-				login = request.args.get('Login', '')
-				password = request.args.get('Password', '')
+				first = body.get('FirstName', '')
+				last = body.get('LastName', '')
+				login = body.get('Login', '')
+				password = body.get('Password', '')
 				return update_user(id, first, last, login, password)
 
 
@@ -248,10 +268,5 @@ if __name__ == '__main__':
 		app.debug = False
 		http_server = WSGIServer(('', 4996), app)
 
-		while True:
-			try:
-				http_server.serve_forever()
-			except:
-				not_found()
-				Session.rollback()
+		http_server.serve_forever()
 		#app.run(host='0.0.0.0', port=4996)
