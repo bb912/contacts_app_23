@@ -20,7 +20,7 @@ var lastName = "";
 // Update button onclick to send XMLHTTPRequest.
 function signUp()
 {
-  alert("signUp alert " + document.getElementById("username").value);
+  //alert("signUp alert " + document.getElementById("username").value);
   // var button = document.getElementById("btn");
   var first = document.getElementById("firstText").value;
   var last = document.getElementById("lastText").value;
@@ -38,7 +38,7 @@ function signUp()
   {
     //var jsonObject = JSON.parse(xhr.responseText);
     xhr.onreadystatechange = function () {
-      alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
+      //alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
 			  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 			  {
           document.getElementById("signupmessage").innerHTML = "Account successfully created";
@@ -48,7 +48,7 @@ function signUp()
         }
     };
     xhr.send(jsonPayload);
-    alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
+    //alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
   }
   catch(err)
   {
@@ -59,7 +59,7 @@ function signUp()
 // Logging in existing user. Returns to main page if request unsuccessful.
 function doLogin()
 {
-  alert("doLogin alert");
+  //alert("doLogin alert");
 	userId = 0;
 	firstName = "";
 	lastName = "";
@@ -80,7 +80,7 @@ function doLogin()
   try
   {
     xhr.onreadystatechange = function () {
-      alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
+      //alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
 			  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 			  {
           var jsonObject = JSON.parse(xhr.responseText);
@@ -316,16 +316,17 @@ function createList(json)
 }
 
 function insertNewRecord(data) {
+  alert(data.FirstName);
   var table = document.getElementById("contactstable").getElementsByTagName('tbody')[0];
   var newRow = table.insertRow(table.length);
   cell1 = newRow.insertCell(0);
-  cell1.innerHTML = data.firstName;
+  cell1.innerHTML = data.FirstName;
   cell2 = newRow.insertCell(1);
-  cell2.innerHTML = data.lastName;
+  cell2.innerHTML = data.LastName;
   cell3 = newRow.insertCell(2);
-  cell3.innerHTML = data.email;
+  cell3.innerHTML = data.Email;
   cell4 = newRow.insertCell(3);
-  cell4.innerHTML = data.phonenumber;
+  cell4.innerHTML = data.Phone;
   cell4 = newRow.insertCell(4);
   cell4.innerHTML = `<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
   <a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>`;
@@ -379,13 +380,18 @@ function searchContacts()
       if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 	    {
         var jsonObj = JSON.parse(xhr.responseText);
-        var countKey = Object.keys(jsonObj)
-        alert("help");
+        var countKey = Object.keys(jsonObj).length;
+        //alert("help");
+        alert("countKey = "+countKey);
         
 
-        alert(""+jsonObj['"'+0+'"']);
-        for (var i = 0; i < countKey; i++){
-          insertNewRecord(jsonObj['"'+i+'"']);
+        //alert(''+jsonObj["0"].Email);
+        //alert('a'+jsonObj["0"].Email);
+        //alert('b'+jsonObj["%d",0].Email);
+        var i
+        for (i = 0; i < countKey; i++){
+          alert('b'+jsonObj["%d",i].Email);
+          insertNewRecord(jsonObj["%d",i]);
         }
         
       }
