@@ -17,7 +17,7 @@ session = DBSession()
 CORS(app)
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found():
 		return make_response(jsonify({'error': 'Not found'}), 404)
 
 
@@ -57,6 +57,7 @@ def delete_contact(id):
 # update an existing contact
 def update_contact(contact_id, first_name, last_name, phone, email):
 		updated_contact = session.query(Contact).filter_by(ID=contact_id).one()
+
 		if first_name:
 				updated_contact.FirstName = first_name
 		if last_name:
@@ -244,5 +245,11 @@ if __name__ == '__main__':
 		pymysql.install_as_MySQLdb()
 		app.debug = False
 		http_server = WSGIServer(('', 4996), app)
-		http_server.serve_forever()
+
+		while True:
+			try:
+				http_server.serve_forever()
+			except:
+				not_found()
+				Session.rollback()
 		#app.run(host='0.0.0.0', port=4996)
