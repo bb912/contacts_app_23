@@ -52,7 +52,7 @@
                 </div>
 		  </div>
 
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover" id="contactstable">
                 <thead>
                     <tr>
 						<th>
@@ -70,6 +70,7 @@
                 </thead>
             <tbody>
 							<!--Gets all the information added (Contact's Name, Phone number, etc. and adds it to the database in an array form)-->
+							<!--
 						<tr>
 							<td>
 								<span class="custom-checkbox">
@@ -81,12 +82,13 @@
 						<td><?php echo $row["useremail"]; ?></td>
 						<td><?php echo $row["address"]; ?></td>
 						<td><?php echo $row["userphone"]; ?></td>
-						<!--Creates the tables (border layouts) to edit the contacts' informations and also delete them-->
+						<!--Creates the tables (border layouts) to edit the contacts' informations and also delete them
 						<td>
 							<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 							<a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 						</td>
 						</tr>
+					-->
           	</tbody>
           </table>
 					<!--It links the number of pages full of contacts and skip them to the next one every time one is full, incrementing from 1-100-->

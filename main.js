@@ -213,7 +213,7 @@ function checkPhone(phone)
 
 function addContact()
 {
-  alert("addContact() alert!!");
+  //alert("addContact() alert!!");
   alert("Found cookie " + getCookie());
   var valid = false;
   var newFirst = document.getElementById("firstText").value;
@@ -244,8 +244,8 @@ function addContact()
   
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
+  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.setRequestHeader("Content-type", "text/plain; charset=UTF-8");
   try
 	{
 		xhr.onreadystatechange = function()
@@ -253,7 +253,6 @@ function addContact()
 			if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 			{
         //document.getElementById("contactAddResult").innerHTML = "Contact has been added";
-        //searchContacts();
 			}
     };
     alert("url: " + url);
@@ -300,6 +299,7 @@ function createArray(json)
   var allNames = [json.FirstName].join(" ");
   return allNames;
 }
+
 // Creates list of contacts using array of names from JSON object. 
 // Not sure if the list should already be created by html, or here.
 function createList(json)
@@ -313,6 +313,22 @@ function createList(json)
     node.appendChild(textnode);
     document.getElementById('contactUL').appendChild(node);
   }
+}
+
+function insertNewRecord(data) {
+  var table = document.getElementById("contactstable").getElementsByTagName('tbody')[0];
+  var newRow = table.insertRow(table.length);
+  cell1 = newRow.insertCell(0);
+  cell1.innerHTML = data.firstName;
+  cell2 = newRow.insertCell(1);
+  cell2.innerHTML = data.lastName;
+  cell3 = newRow.insertCell(2);
+  cell3.innerHTML = data.email;
+  cell4 = newRow.insertCell(3);
+  cell4.innerHTML = data.phonenumber;
+  cell4 = newRow.insertCell(4);
+  cell4.innerHTML = `<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+  <a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>`;
 }
 
 // General search function, uses <ul> to display results in unordered list.
@@ -350,7 +366,7 @@ function searchContacts()
 {
   //alert("searchContacts() alert!");
   //document.getElementById("contactSearchResult").innerHTML = "";
-  var url = urlBase + "/contactsApi?UserID="+ getCookie() + "&SearchTerm="+ document.getElementById("searchField").value; 
+  var url = urlBase + "/contactsApi/search?UserID="+ getCookie() + "&SearchTerm="+ document.getElementById("searchField").value; 
   alert("url: " + url);
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -362,8 +378,15 @@ function searchContacts()
     {
       if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 	    {
-        var jsonPayload = JSON.parse(xhr.responseText);
-        createList(jsonPayload);
+        var jsonObj = JSON.parse(xhr.responseText);
+        var countKey = Object.keys(jsonObj)
+        alert("help");
+        
+
+        alert(""+jsonObj['"'+0+'"']);
+        for (var i = 0; i < countKey; i++){
+          insertNewRecord(jsonObj['"'+i+'"']);
+        }
         
       }
     };
