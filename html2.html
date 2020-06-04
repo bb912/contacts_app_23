@@ -1,29 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact Design Page 2</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <head>
+	   <meta charset="utf-8">
+	   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		 <meta name="viewport" content="width=device-width, initial-scale=1">
+	   <title>Contact Design Page 2</title>
+		 <!--Gets the font types from this google website-->
+		 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+		 <!--Gets the icons used in the website from this google website-->
+		 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	   <!--Used bootstrap with pre-determined or pre-made button layouts and font types, its like having a library full of pre-installed materials-->
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		 <!--the .js javascript file to call every function to make the html link/work with the end-point of the whole project (login functions, signup functions, edit functions,
+		  delete function, talk to the API functions, talk to the .php functions), since in this project we are using python instead of .php files, we are calling the python's functiosn
+		  inside the javascript files; therefore not need for me to call the python's functions here-->
+  		<script type="text/javascript" src="main.js"></script>
+	 <!--Implements jquary library to make it easier-->
+ 		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+ 		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<link rel="stylesheet" href="styles.css">
+ 		<!--Calls the .css file stylesheet (font, colors, shape, sizes, etc)-->
+ 		<link rel="stylesheet" href="styles.css">
 
-</head>
-<body>
-	<div class="topnav">
-  <a class="active" href="#home">Home</a>
-  <input type="text" placeholder="Search..">
-	</div>
+ 	</head>
+ 	<body>
+	 	<!--Makes a button for Home (We won't use home in this project since we don't have another linked page) and
+	 	a search bar button-->
+	 	<div class="topnav">
+  	 	<a class="active" href="#home">Home</a>
+  		<input type="text" placeholder="Search..">
+		</div>
 
-	<br>
-	<br>
-	<h3 class="text-center text-success" id="message"><?php echo  $success; ?></h3>
+		<br>
+		<br>
+		<!--Creates the whole table to manage the contacts and within it creates the buttons to add and delete contacts (colums and rows where
+		the Names, Emails, Phone number and Address will be located)-->
+		<h3 class="text-center text-success" id="message"></h3>
     <div class="container">
         <div class="table-wrapper">
             <div class="table-title">
@@ -36,7 +49,7 @@
 						<a href="#deleteContactModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 					</div>
                 </div>
-			</div>
+		  </div>
 
             <table class="table table-striped table-hover">
                 <thead>
@@ -47,52 +60,51 @@
 								<label for="selectAll"></label>
 							</span>
 						</th>
-                        <th>Name</th>
-                        <th>Email</th>
-												<th>Address</th>
-                        <th>Phone</th>
-                        <th>Actions</th>
-                    </tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+						</tr>
                 </thead>
-                <tbody>
-				<?php
-                while($row = mysqli_fetch_array($result))
-                {
-                ?>
-					<tr>
-						<td>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
-							</span>
-						</td>
-						<td><?php echo $row["useremail"]; ?></td>
+            <tbody>
+							<!--Gets all the information added (Contact's Name, Phone number, etc. and adds it to the database in an array form)-->
+						<tr>
+							<td>
+								<span class="custom-checkbox">
+									<input type="checkbox" id="checkbox1" name="options[]" value="1">
+									<label for="checkbox1"></label>
+								</span>
+							</td>
+						<td><?php echo $row["username"]; ?></td>
 						<td><?php echo $row["useremail"]; ?></td>
 						<td><?php echo $row["address"]; ?></td>
 						<td><?php echo $row["userphone"]; ?></td>
+						<!--Creates the tables (border layouts) to edit the contacts' informations and also delete them-->
 						<td>
 							<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 							<a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 						</td>
-					</tr>
-
-                </tbody>
-            </table>
-			<div class="clearfix">
-                <div class="hint-text">Showing <b>5</b> out of <b>100</b> entries</div>
+						</tr>
+          	</tbody>
+          </table>
+					<!--It links the number of pages full of contacts and skip them to the next one every time one is full, incrementing from 1-100-->
+								<div class="clearfix">
+                <div class="hint-text">Showing <b>0</b> out of <b>100</b> entries</div>
                 <ul class="pagination">
                     <li class="page-item disabled"><a href="#">Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
+                    <li class="page-item active"><a href="#" class="page-link">1</a></li>
                     <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
+                    <li class="page-item"><a href="#" class="page-link">3</a></li>
                     <li class="page-item"><a href="#" class="page-link">4</a></li>
                     <li class="page-item"><a href="#" class="page-link">5</a></li>
                     <li class="page-item"><a href="#" class="page-link">Next</a></li>
                 </ul>
             </div>
         </div>
-    </div>
-
+      </div>
+	<!--Adds the Add Contact layout with borders and buttons for submitting the added contact and the x to get out of it. Inside it has
+	the placeholders to add the name, email, phone number and address-->
 	<div id="addContactModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -103,20 +115,20 @@
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<label>Name</label>
-							<input type="text" class="form-control" name="username" placeholder="Enter name" required>
+							<label>First Name</label>
+							<input type="text" class="form-control" name="username" placeholder="Enter First Name" required>
+						</div>
+						<div class="form-group">
+							<label>Last Name</label>
+							<input type="email" class="form-control" name="username" placeholder="Enter Last Name" required>
 						</div>
 						<div class="form-group">
 							<label>Email</label>
-							<input type="email" class="form-control" name="useremail" placeholder="Enter email" required>
+							<input type="text" class="form-control" name="usermail" placeholder="Enter Email" required>
 						</div>
-						<div class="form-group">
-							<label>Address</label>
-							<textarea class="form-control" name="address" placeholder="Enter Address" required></textarea>
-						</div>
-						<div class="form-group">
+            <div class="form-group">
 							<label>Phone</label>
-							<input type="text" class="form-control" name="phone" placeholder="Enter phone" required>
+							<textarea class="form-control" name="phone" placeholder="Enter Phone Number" required></textarea>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -127,7 +139,8 @@
 			</div>
 		</div>
 	</div>
-	<!-- Edit Modal HTML -->
+	<!--Edits the contacts with borders and buttons for submitting the editted contact and the x to get out of it. Inside it has
+	the placeholders to edit the name, email, phone number and address-->
 	<div id="editContactModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -138,20 +151,20 @@
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<label>Name</label>
+							<label>First Name</label>
 							<input type="text" class="form-control" required>
 						</div>
 						<div class="form-group">
-							<label>Email</label>
+							<label>Last Name</label>
 							<input type="email" class="form-control" required>
 						</div>
 						<div class="form-group">
-							<label>Address</label>
-							<textarea class="form-control" required></textarea>
-						</div>
-						<div class="form-group">
-							<label>Phone</label>
+							<label>Email</label>
 							<input type="text" class="form-control" required>
+						</div>
+            <div class="form-group">
+							<label>Phone</label>
+							<textarea class="form-control" required></textarea>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -162,7 +175,8 @@
 			</div>
 		</div>
 	</div>
-
+	<!--Creates the Delete button to delete all the contacts in one click and a second warning window asking the user if sure of deleting
+	every contact's information from the database-->
 	<div id="deleteContactModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -183,18 +197,15 @@
 			</div>
 		</div>
 	</div>
-
+	<!--function to exit the popped windows-->
 	<script>
         $(document).ready(function()
         {
             setTimeout(function()
             {
-                $('#message').hide();
+              $('#message').hide();
             },3000);
         });
-    </script>
-
-<script src="javascript.js"></script>
-
-</body>
+  </script>
+  </body>
 </html>

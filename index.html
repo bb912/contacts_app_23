@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <!--sets html to english language, formats characters, width and height
 image' scale fixed, links the .css file (edited fonts and bottoms) to the
 .html file-->
@@ -9,9 +8,13 @@ image' scale fixed, links the .css file (edited fonts and bottoms) to the
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Contact Design Page 1</title>
 		<link rel="stylesheet" href="style.css">
+		<!-- the .js javascript file to call every function to make the html link/work with the end-point of the whole project (login functions, signup functions, edit functions,
+	delete function, talk to the API functions, talk to the .php functions), since in this project we are using python instead of .php files, we are calling the python's functiosn
+	inside the javascript files; therefore not need for me to call the python's functions here-->
+		<script type="text/javascript" src="main.js"></script>
  		<!--get the font style from jquery-->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
-		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!--These functions creates the animation of when the signup windows is click then the login window is hidden and viseversa-->
 		<script>
 			$(document).ready(function(){
 				$(".login-form").hide();
@@ -36,32 +39,36 @@ image' scale fixed, links the .css file (edited fonts and bottoms) to the
 		</script>
 
 	</head>
-
+	<!--Creates the square layout you see in the signup and login page and all its placeholders (first name, last name, username and password)-->
 	<body>
 	<div class="wrapper">
-    <div class="container">
+  	<div class="container">
 
-	<div class="signup">sign Up</div>
-      <div class="login">log In</div>
+			<div class="signup">sign Up</div>
+    	<div class="login">log In</div>
 
-       <div class="signup-form">
-          <input type="text" placeholder="Your Email Address" class="input"><br />
-          <input type="text" placeholder="Choose a Username" class="input"><br />
-          <input type="password" placeholder="Choose a Password" class="input"><br />
-          <div class="btn">Create account</div>
-       </div>
+  		<div class="signup-form">
+  			<input type="text" id="firstText" placeholder="First Name" class="input"><br />
+			<input type="text" id="lastText" placeholder="Last Name" class="input"><br />
+      		<input type="text" id="username" placeholder="Choose a Username" class="input"><br />
+      		<input type="password" id="password" placeholder="Choose a Password" class="input"><br />
+			<div class="btn" onclick="signUp()">Create Account</div>
+			<div class="messagetext" id="signupmessage"></div> 
+    	</div>
 
-      <div class="login-form">
-          <input type="text" class="input" placeholder="Email or Username" ><br />
-          <input type="password" class="input" placeholder="Password"><br />
-          <div class="btn"><a href="html2.html">log in</a></div>
+    	<div class="login-form">
+    		<input type="text" class="input" placeholder="Username" ><br />
+      	<input type="password" class="input" placeholder="Password"><br />
+				<!--Links the login button to the second html page when clicked and the user inputs the right credentials-->
+		  <div class="btn" onclick="doLogin()">log in</div>
+		  <div class="messagetext" id="loginmessage"></div>
 
-          <span><a href="#">I forgot my username or password.</a></span>
+				<!--Makes the "forgot my username or password" text even though it doesn't work just for beauty and since on the next project we will implement this option-->
+    	<span><a href="#">I forgot my username or password.</a></span>
+			</div>
 
-       </div>
-
-    </div>
+  	</div>
   </div>
-
+	
 	</body>
 </html>

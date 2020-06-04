@@ -10,8 +10,7 @@
   Last updated: 5/28/2020, 12:25 PM
 */
 
-var urlBase = 'https://cop433123.us/';
-var extension = 'py';
+var urlBase = 'http://198.12.250.5:4996';
 
 var userId = 0;
 var firstName = "";
@@ -21,37 +20,46 @@ var lastName = "";
 // Update button onclick to send XMLHTTPRequest.
 function signUp()
 {
+  alert("signUp alert " + document.getElementById("username").value);
   // var button = document.getElementById("btn");
   var first = document.getElementById("firstText").value;
   var last = document.getElementById("lastText").value;
   var user = document.getElementById("username").value;
   var pass = document.getElementById("password").value;
-  var jsonPayload = '{"FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '}';
-  var url = urlBase + '/userAPI.' + extension;
-	var xhr = new XMLHttpRequest();
+  var jsonPayload = '{"FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '"}';
+  //198.12.250.5:4996/userApi?FirstName=hello&LastName=darkness&Login=myold&Password=friend
+  var url = urlBase + '/userApi?FirstName=' + first + "&LastName=" + last + "&Login=" + user + "&Password=" + pass;
+  var xhr = new XMLHttpRequest();
+  //xhr.addEventListener("readystatechange", reqListener);
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
   try
   {
+    //var jsonObject = JSON.parse(xhr.responseText);
+    xhr.onreadystatechange = function () {
+      alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
+			  if (status === 0 || (status >= 200 && status < 400))
+			  {
+          document.getElementById("signupmessage").innerHTML = "Account successfully created";
+        }
+        else{
+          document.getElementById("signupmessage").innerHTML = "Error creating account";
+        }
+    };
     xhr.send(jsonPayload);
-    var jsonObject = JSON.parse(xhr.responseText);
-    xhr.onreadystatechange = function()
-	  {
-			if (this.readyState == 4 && this.status == 201)
-			{
-        document.getElementById("newUserResult").innerHTML = "Account successfully created";
-			}
-		};
-    }
-    catch(err)
-    {
-        document.getElementById("newUserResult").innerHTML = err.message;
-    }
+    alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
+  }
+  catch(err)
+  {
+    document.getElementById("signupmessage").innerHTML = err.message;
+  }
 }
 
 // Logging in existing user. Returns to main page if request unsuccessful.
 function doLogin()
 {
+  alert("doLogin alert");
 	userId = 0;
 	firstName = "";
 	lastName = "";
@@ -62,7 +70,7 @@ function doLogin()
 
   document.getElementById("loginResult").innerHTML = "";
   var jsonPayload = '{"Login" : "' + login + '", "Password" : "' + password + '"}';
-  var url = urlBase + '/userAPI/login.' + extension;
+  var url = urlBase + '/userAPI/login' + extension;
 
   	// Transferring data from front end to API.
 	var xhr = new XMLHttpRequest();
@@ -154,6 +162,7 @@ function checkEmail(email)
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 }
+
 function checkName(name)
 {
   var re = /^[a-zA-Z]+ [a-zA-Z]+$/;
@@ -204,7 +213,7 @@ function addContact()
   var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '}';
 
   // Edit name to match with API python file.
-  var url = urlBase + '/contactsApi.' + extension;
+  var url = urlBase + '/contactsApi' + extension;
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
@@ -310,7 +319,7 @@ function search()
 function searchContact()
 {
   //document.getElementById("contactSearchResult").innerHTML = "";
-  var url = urlBase + '/contactsApi.' + extension; 
+  var url = urlBase + '/contactsApi' + extension; 
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");

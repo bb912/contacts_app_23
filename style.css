@@ -55,7 +55,15 @@ body{
   text-transform: uppercase;
 }
 
-.signup-form,
+.signup-form{
+  background: #fff;
+  padding: 40px;
+  clear: both;
+  width: 100%;
+  box-sizing: border-box;
+  height: 480px;
+}
+
 .login-form{
   background: #fff;
   padding: 40px;
@@ -63,6 +71,13 @@ body{
   width: 100%;
   box-sizing: border-box;
   height: 400px;
+}
+
+.messagetext{
+  background: #fff;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
 }
 
 span a{
