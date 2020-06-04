@@ -77,23 +77,30 @@ function doLogin()
   xhr.open("GET", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-  // Checking if the user entered a valid user/password combination.
   try
-	{
-    
+  {
+    xhr.onreadystatechange = function () {
+      alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
+			  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
+			  {
+          var jsonObject = JSON.parse(xhr.responseText);
+          userId = jsonObject.User.ID;
+          //alert(userId);
+          saveCookie();
+          //alert("Found cookie " + getCookie());
+          window.location.href = "html2.html";
+        }
+        else{
+          document.getElementById("loginmessage").innerHTML = "Error logging in";
+        }
+    };
     xhr.send(jsonPayload);
-    alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
-		//var jsonObject = JSON.parse(xhr.responseText);
-
-		saveCookie();
-
-		window.location.href = "html2.html";
-	}
-
-	catch(err)
-	{
-		document.getElementById("loginResult").innerHTML = err.message;
-	}
+    //alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
+  }
+  catch(err)
+  {
+    document.getElementById("loginmessage").innerHTML = err.message;
+  }
 
 }
 
@@ -102,16 +109,33 @@ function saveCookie()
   var minutes = 20;
   var date = new Date();
   date.setTime(date.getTime()+(minutes*60*1000));
-	document.cookie = "firstName=" + firstName + ",lastName=" + lastName + ",userId=" + userId + ";expires=" + date.toGMTString();
+	document.cookie = "userId=" + userId + ";expires=" + date.toGMTString() + ";path=/";
 }
 
+function getCookie() {
+  var name = "userId=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+/*
 function readCookie()
 {
 	userId = -1;
 	var data = document.cookie;
 
   // splits/token store the firstName, lastName, userId in arrays.
-	var splits = data.split(",");
+	var splits = data.split(";");
 	for(var i = 0; i < splits.length; i++)
 	{
     // Removing whitespace.
@@ -140,16 +164,18 @@ function readCookie()
 	{
 		document.getElementById("userName").innerHTML = "Logged in as " + firstName + " " + lastName;
 	}
-}
+}*/
 
 function doLogout()
 {
-	userId = 0;
+	userId = -1;
 	firstName = "";
 	lastName = "";
-
+  alert("clearing " + document.cookie);
   // Prevents webpage from being cached
-	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  //document.cookie = "userId=; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+  alert("cleared " + document.cookie);
 
   // Returns user to main page. Change filename if necessary.
 	window.location.href = "index.html";
@@ -187,6 +213,8 @@ function checkPhone(phone)
 
 function addContact()
 {
+  alert("addContact() alert!!");
+  alert("Found cookie " + getCookie());
   var valid = false;
   var newFirst = document.getElementById("firstText").value;
   var newLast = document.getElementById("lastText").value;
@@ -194,27 +222,26 @@ function addContact()
   var newPhone = document.getElementById("phoneText").value;
 
   // Checks validity of user input before sending JSON payload.
-  while(valid === false)
-  {
     if(!checkEmail(newEmail))
     {
-      document.getElementById("addContactResult").innerHTML = "Invalid email";
+      //document.getElementById("addContactResult").innerHTML = "Invalid email";
+      return;
     }
     else if(!checkPhone(newPhone))
     {
-      document.getElementById("addContactResult").innerHTML = "Invalid phone number";
+      //document.getElementById("addContactResult").innerHTML = "Invalid phone number";
+      return;
     }
     else
     {
       valid = true;
     }
-  }
 
-  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '}';
+  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '"}';
 
   // Edit name to match with API python file.
-  var url = urlBase + '/contactsApi' + extension;
-
+  var url = urlBase + "/contactsApi?UserID=" + getCookie() + "&FirstName=" + newFirst + "&LastName=" + newLast + "&Email=" + newEmail + "&PhoneNumber=" + newPhone;
+  
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -223,16 +250,18 @@ function addContact()
 	{
 		xhr.onreadystatechange = function()
 		{
-			if (this.readyState == 4 && this.status == 200)
+			if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 			{
-				document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+        //document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+        //searchContacts();
 			}
-		};
+    };
+    alert("url: " + url);
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("contactAddResult").innerHTML = err.message;
+		//document.getElementById("contactAddResult").innerHTML = err.message;
 	}
 }
 
@@ -242,7 +271,7 @@ function deleteContact()
 {
   var del = document.getElementById("deleteText").value;
   var jsonPayload = '{"delete" : "' + del + '","userId" : ' + userId + '}';
-  var url = urlBase + '/contactsApi/<int:ID>' + extension;
+  var url = urlBase + '/contactsApi/' ;
 
   var xhr = new XMLHttpRequest();
   xhr.open("DELETE", url, true);
@@ -288,6 +317,7 @@ function createList(json)
 
 // General search function, uses <ul> to display results in unordered list.
 // Function assumes that an <ul> already exists with some <li> elements.
+/*
 function search()
 {
   var input, filter, ul, li, a, txtValue;
@@ -314,31 +344,36 @@ function search()
       li[i].style.display = "none";
     }
   }
-}
+}*/
 
-function searchContact()
+function searchContacts()
 {
+  //alert("searchContacts() alert!");
   //document.getElementById("contactSearchResult").innerHTML = "";
-  var url = urlBase + '/contactsApi' + extension; 
+  var url = urlBase + "/contactsApi?UserID="+ getCookie() + "&SearchTerm="+ document.getElementById("searchField").value; 
+  alert("url: " + url);
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  xhr.onreadystatechange = function()
-  {
-	  try
-	  {
-      if (this.readyState == 4 && this.status == 200)
+  
+	try
+	{
+    xhr.onreadystatechange = function()
+    {
+      if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
 	    {
         var jsonPayload = JSON.parse(xhr.responseText);
         createList(jsonPayload);
-        search();
-        xhr.send(jsonPayload);
-	    }
-	  }
-  	catch(err)
-  	{
-		document.getElementById("contactSearchResult").innerHTML = err.message;
-  	}
-  };
+        
+      }
+    };
+    xhr.send("");
+	}
+  catch(err)
+  {
+		//document.getElementById("contactSearchResult").innerHTML = err.message;
+  }
+  
+  
 
 }
