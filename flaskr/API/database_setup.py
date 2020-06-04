@@ -58,7 +58,7 @@ class Contact(Base):
                         'LastName' : self.LastName,
                         'Email' : self.Email,
                         'Phone' : self.PhoneNumber,
-                        #'ID': self.ID,
+                        'ID': self.ID,
                         #'UserID' : self.UserID,
                 }
 
