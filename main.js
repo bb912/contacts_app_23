@@ -68,22 +68,22 @@ function doLogin()
   var login = document.getElementById("loginName").value;
   var password = document.getElementById("loginPassword").value;
 
-  document.getElementById("loginResult").innerHTML = "";
+  //document.getElementById("loginResult").innerHTML = "";
   var jsonPayload = '{"Login" : "' + login + '", "Password" : "' + password + '"}';
-  var url = urlBase + '/userAPI/login' + extension;
-
-  	// Transferring data from front end to API.
-	var xhr = new XMLHttpRequest();
-
-  	// Since false, any xhr.send() calls do not return until a response is achieved.
-	xhr.open("GET", url, false);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  var url = urlBase + '/userApi/login?Login='+ login + "&Password=" + password;
+  
+  var xhr = new XMLHttpRequest();
+  // Since false, any xhr.send() calls do not return until a response is achieved.
+  xhr.open("GET", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
   // Checking if the user entered a valid user/password combination.
   try
 	{
-		xhr.send(jsonPayload);
-		var jsonObject = JSON.parse(xhr.responseText);
+    
+    xhr.send(jsonPayload);
+    alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
+		//var jsonObject = JSON.parse(xhr.responseText);
 
 		saveCookie();
 
