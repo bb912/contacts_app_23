@@ -22,10 +22,9 @@ Base = declarative_base()
 # We will add classes for both tables
 
 class User(Base):
-        __tablename__ = 'Users' # or whatever table is called
+        __tablename__ = 'Users'
 
-
-        ID = Column(Integer, primary_key=True) # this is user_id in contacts table
+        ID = Column(Integer, primary_key=True)
         FirstName = Column(String(50), nullable=False)
         LastName = Column(String(50), nullable=False)
         Login = Column(String(50))
@@ -37,7 +36,8 @@ class User(Base):
                         'FirstName': self.FirstName,
                         'LastName': self.LastName,
                         'Login': self.Login,
-                        #'Password': self.Password, We should never be sharing this password with frontend
+                        #'Password': self.Password,
+                        #We should never be sharing this password with frontend
                         'ID': self.ID,
                 }
 
@@ -56,10 +56,10 @@ class Contact(Base):
                 return {
                         'FirstName' : self.FirstName,
                         'LastName' : self.LastName,
-                        'email' : self.Email,
-                        'phone' : self.PhoneNumber,
+                        'Email' : self.Email,
+                        'Phone' : self.PhoneNumber,
                         'ID': self.ID,
-                        'UserID' : self.UserID,
+                        #'UserID' : self.UserID,
                 }
 
 # creates a create_engine instance at the bottom of the file
