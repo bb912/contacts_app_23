@@ -9,6 +9,12 @@
 
   Last updated: 5/28/2020, 12:25 PM
 */
+/*
+var script = document.createElement('script');
+script.src = 'https://code.jquery.com/jquery-3.4.1.min.js';
+script.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(script);
+*/
 
 var urlBase = 'http://198.12.250.5:4996';
 
@@ -18,17 +24,55 @@ var lastName = "";
 
 // Need to update html to have fields to enter firstName & lastName
 // Update button onclick to send XMLHTTPRequest.
-function signUp()
+
+function signUp() {
+  var first = document.getElementById("firstText").value;
+  var last = document.getElementById("lastText").value;
+  var user = document.getElementById("username").value;
+  var pass = document.getElementById("password").value;
+
+  var data = new FormData();
+  data.append("FirstName", first);
+  data.append("LastName", last);
+  data.append("Login", user);
+  data.append("Password", pass);
+  
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+  try{
+
+    xhr.addEventListener("readystatechange", function() {
+      if(this.readyState === 4) {
+        if (this.status === 0 || (this.status >= 200 && this.status < 400)){
+          document.getElementById("signupmessage").innerHTML = "Account successfully created";
+        }
+        else{
+          document.getElementById("signupmessage").innerHTML = "Error creating account";
+        }
+      }
+    });
+  }
+  catch(err)
+  {
+    document.getElementById("signupmessage").innerHTML = err.message;
+  }
+  
+  xhr.open("POST", urlBase + "/userApi");
+  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send(data);
+}
+/*
+function signUp2()
 {
-  //alert("signUp alert " + document.getElementById("username").value);
+  alert("signUp alert " + document.getElementById("username").value);
   // var button = document.getElementById("btn");
   var first = document.getElementById("firstText").value;
   var last = document.getElementById("lastText").value;
   var user = document.getElementById("username").value;
   var pass = document.getElementById("password").value;
-  var jsonPayload = '{"FirstName": "' + first + '", "LastName": "' + last + '", "Login": "' + user + '", "Password": "' + pass + '"}';
+  var jsonPayload = '{FirstName= ' + first + ', LastName= ' + last + ', Login= ' + user + ', Password= ' + pass + '}';
   //198.12.250.5:4996/userApi?FirstName=hello&LastName=darkness&Login=myold&Password=friend
-  var url = urlBase + '/userApi?FirstName=' + first + "&LastName=" + last + "&Login=" + user + "&Password=" + pass;
+  var url = urlBase + '/userApi';//?FirstName=' + first + "&LastName=" + last + "&Login=" + user + "&Password=" + pass;
   var xhr = new XMLHttpRequest();
   //xhr.addEventListener("readystatechange", reqListener);
   xhr.open("POST", url, true);
@@ -39,13 +83,7 @@ function signUp()
     //var jsonObject = JSON.parse(xhr.responseText);
     xhr.onreadystatechange = function () {
       //alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
-			  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
-			  {
-          document.getElementById("signupmessage").innerHTML = "Account successfully created";
-        }
-        else{
-          document.getElementById("signupmessage").innerHTML = "Error creating account";
-        }
+			  
     };
     xhr.send(jsonPayload);
     //alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
@@ -55,9 +93,82 @@ function signUp()
     document.getElementById("signupmessage").innerHTML = err.message;
   }
 }
+*/
 
 // Logging in existing user. Returns to main page if request unsuccessful.
-function doLogin()
+function doLogin(){
+  userId = 0;
+	firstName = "";
+  lastName = "";
+
+  var login = document.getElementById("loginName").value;
+  var password = document.getElementById("loginPassword").value;
+  
+  var data = new FormData();
+  data.append("Login", login);
+  data.append("Password", password);
+  
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+  
+  xhr.addEventListener("readystatechange", function() {
+    if(this.readyState === 4) {
+      console.log(this.responseText);
+    }
+  });
+  
+  xhr.open("GET", urlBase + "/userApi/login");
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  
+  xhr.send(data);
+
+}
+
+
+function doLogin2(){
+  userId = 0;
+	firstName = "";
+	lastName = "";
+  var login = document.getElementById("loginName").value;
+  var password = document.getElementById("loginPassword").value;
+  //alert("login " +login+ "\npassword " +password);
+  var data = new FormData();
+  data.append("Login", login);
+  data.append("Password", password);
+
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+
+  try{
+    xhr.addEventListener("readystatechange", function() {
+      if(this.readyState === 4) {
+        if (this.status === 0 || (this.status >= 200 && this.status < 400)){
+          var jsonObject = JSON.parse(xhr.responseText);
+          userId = jsonObject.User.ID;
+          //alert(userId);
+          saveCookie();
+          //alert("Found cookie " + getCookie());
+          window.location.href = "html2.html";
+        }
+        else{
+          document.getElementById("loginmessage").innerHTML = "Error logging in";
+        }
+      }
+    });
+  }
+  catch(err)
+  {
+    document.getElementById("loginmessage").innerHTML = err.message;
+  }
+
+  xhr.open("GET", urlBase + "/userApi/login");
+  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  alert("login " +login+ "\npassword " +password + "\ndata "+data);
+  xhr.send(data);
+}
+
+
+function doLogin3()
 {
   //alert("doLogin alert");
 	userId = 0;
@@ -70,7 +181,7 @@ function doLogin()
 
   //document.getElementById("loginResult").innerHTML = "";
   var jsonPayload = '{"Login" : "' + login + '", "Password" : "' + password + '"}';
-  var url = urlBase + '/userApi/login?Login='+ login + "&Password=" + password;
+  var url = urlBase + '/userApi/login';//?Login='+ login + "&Password=" + password;
   
   var xhr = new XMLHttpRequest();
   // Since false, any xhr.send() calls do not return until a response is achieved.
