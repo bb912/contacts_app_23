@@ -108,13 +108,13 @@ def contactsFunction():
 
 
 # get a specific contact by contact ID, or update contact, or delete contact
-@app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE', 'POST'])
 #@cross_origin()
 def contactsFunctionID(id):
 		if request.method == 'GET':
 				return get_contact(id)
 
-		elif request.method == 'PUT':
+		elif request.method == 'PUT' or request.method == 'POST':
 
 				body = request.get_json(force=True)
 
@@ -266,14 +266,6 @@ def usersFunctionID(id):
 				login = body.get('Login', '')
 				password = body.get('Password', '')
 				return update_user(id, first, last, login, password)
-
-def _build_cors_prelight_response():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response
-
 
 
 if __name__ == '__main__':
