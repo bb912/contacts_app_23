@@ -21,6 +21,7 @@ var urlBase = 'http://198.12.250.5:4996';
 var userId = 0;
 var firstName = "";
 var lastName = "";
+var contactID
 
 
 function signUp() {
@@ -185,7 +186,7 @@ function doLogin3()
 */
 function saveCookie()
 {
-  var minutes = 20;
+  var minutes = 120;
   var date = new Date();
   date.setTime(date.getTime()+(minutes*60*1000));
 	document.cookie = "userId=" + userId + ";expires=" + date.toGMTString() + ";path=/";
@@ -331,7 +332,7 @@ function addContact()
 		//document.getElementById("contactAddResult").innerHTML = err.message;
   }
   xhr.open("POST", urlBase + "/contactsApi");
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   alert("jsonPayload: " + jsonPayload);
   xhr.send(jsonPayload);
 }
@@ -392,9 +393,10 @@ function createList(json)
 									<label for="checkbox1"></label>
 								</span> */
 function insertNewRecord(data) {
-  alert(data.FirstName);
+  //alert(data.FirstName);
   var table = document.getElementById("contactstable").getElementsByTagName('tbody')[0];
   var newRow = table.insertRow(table.length);
+  newRow.id = data.ID;
   cell0 = newRow.insertCell(0);
   cell0.innerHTML = `<span class="custom-checkbox">
   <input type="checkbox" id="checkbox1" name="options[]" value="1">
@@ -409,7 +411,7 @@ function insertNewRecord(data) {
   cell4 = newRow.insertCell(4);
   cell4.innerHTML = data.Phone;
   cell4 = newRow.insertCell(5);
-  cell4.innerHTML = `<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+  cell4.innerHTML = `<a href="#editContactModal" class="edit" contactID="`+newRow.id+`" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
   <a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>`;
 }
 
@@ -449,7 +451,7 @@ function searchContacts()
   //alert("searchContacts() alert!");
   //document.getElementById("contactSearchResult").innerHTML = "";
   var url = urlBase + "/contactsApi/search?UserID="+ getCookie() + "&SearchTerm="+ document.getElementById("searchField").value; 
-  alert("url: " + url);
+  //alert("url: " + url);
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -464,19 +466,19 @@ function searchContacts()
         var countKey = Object.keys(jsonObj).length;
         var i
         for (i = 0; i < countKey; i++){
-          alert('b'+jsonObj["%d",i].Email);
+          //alert('b'+jsonObj["%d",i].Email);
           insertNewRecord(jsonObj["%d",i]);
         }
         
       }
     };
-    xhr.send("");
+    
 	}
   catch(err)
   {
 		//document.getElementById("contactSearchResult").innerHTML = err.message;
   }
   
-  
+  xhr.send("");
 
 }
