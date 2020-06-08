@@ -116,7 +116,7 @@ def contactsFunctionID(id):
 
 		elif request.method == 'PUT':
 
-				body = request.get_json()
+				body = request.get_json(force=True)
 
 				first = body.get('FirstName', '')
 				last = body.get('LastName', '')
