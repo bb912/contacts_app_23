@@ -84,7 +84,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 #@cross_origin()
 def contactsFunction():
 
-		body = request.form
+		body = request.get_json()
 
 
 		# list all contacts for user
@@ -111,7 +111,7 @@ def contactsFunctionID(id):
 
 		elif request.method == 'PUT':
 
-				body = request.form
+				body = request.get_json()
 
 				first = body.get('FirstName', '')
 				last = body.get('LastName', '')
@@ -127,7 +127,7 @@ def contactsFunctionID(id):
 #@cross_origin()
 def searchFunctionID():
 
-	body = request.form
+	body = request.get_json()
 
 
 	search_term = body.get('SearchTerm')
@@ -161,10 +161,9 @@ def user_info(id):
 		return jsonify(User=user.serialize)
 
 def create_new_user(first_name, last_name, login, password):
-		print(login)
-		print(login)
+
 		same_user_name = session.query(User).filter_by(Login=login).count()
-		print(same_user_name)
+
 		if same_user_name > 0:
 			return "Username is already in Use, Please Choose another", 409
 
@@ -223,7 +222,7 @@ def verifyPassword(login, password):
 #@cross_origin()
 def usersFunction():
 
-		body = request.form
+		body = request.get_json()
 
 		# list all contacts for user
 		if request.method == 'GET':
@@ -243,7 +242,7 @@ def usersFunction():
 #@cross_origin()
 def userLogin():
 
-	body = request.form
+	body = request.get_json()
 
 	# for logging in
 	if request.method == 'GET':
@@ -254,7 +253,7 @@ def userLogin():
 @app.route('/userApi/<int:id>', methods=['PUT'])
 #@cross_origin()
 def usersFunctionID(id):
-		body = request.form
+		body = request.get_json()
 
 		if request.method == 'PUT':
 				first = body.get('FirstName', '')
