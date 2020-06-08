@@ -80,29 +80,29 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 
 # LISTING ALL CONTACTS OR ADDING A CONTACT FOR A USER
 @app.route('/')
-@app.route('/contactsApi', methods=['GET', 'POST', 'OPTIONS'])
+@app.route('/contactsApi', methods=['POST'])
 #@cross_origin()
 def contactsFunction():
 
-		if request.method == "OPTIONS": # CORS preflight
+		#if request.method == "OPTIONS": # CORS preflight
         		return _build_cors_prelight_response()
 
 		body = request.get_json()
 
 
 		# list all contacts for user
-		if request.method == 'GET':
-				return get_contacts(body.get('UserID', ''))
-		elif request.method == 'POST':
+		#if request.method == 'GET':
+		#		return get_contacts(body.get('UserID', ''))
+		#elif request.method == 'POST':
 
 
 
-				first = body.get('FirstName', '')
-				last = body.get('LastName', '')
-				phone = body.get('PhoneNumber', '')
-				email = body.get('Email', '')
-				user = body.get('UserID', '')
-				return create_new_contact(user, first, last, phone, email)
+		first = body.get('FirstName', '')
+		last = body.get('LastName', '')
+		phone = body.get('PhoneNumber', '')
+		email = body.get('Email', '')
+		user = body.get('UserID', '')
+		return create_new_contact(user, first, last, phone, email)
 
 
 # get a specific contact by contact ID, or update contact, or delete contact
