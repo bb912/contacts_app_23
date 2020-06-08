@@ -88,7 +88,7 @@ def contactsFunction():
         #		return _build_cors_prelight_response()
 
 		#body = request.get_json()
-		body = jsonify(request.data)
+		body = request.data.get_json()
 		print(body)
 
 		# list all contacts for user
