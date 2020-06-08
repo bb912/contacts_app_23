@@ -15,7 +15,7 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-CORS(app, supports_credentials=True, resources=r'/*': {"origins":'*'} )
+CORS(app, supports_credentials=True, resources={r'/*': {"origins":'*'}})
 
 @app.errorhandler(404)
 def not_found():
