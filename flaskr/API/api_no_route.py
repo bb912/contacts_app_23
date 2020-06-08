@@ -131,7 +131,7 @@ def contactsFunctionID(id):
 # get a specific contact by contact ID, or update contact, or delete contact
 @app.route('/contactsApi/<int:id>/delete', methods=['POST'])
 #@cross_origin()
-def contactsFunctionID(id):
+def contactsFunctionDelete(id):
 		return delete_contact(id)
 
 
