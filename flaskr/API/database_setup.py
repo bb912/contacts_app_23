@@ -56,8 +56,8 @@ class Contact(Base):
                 return {
                         'FirstName' : self.FirstName,
                         'LastName' : self.LastName,
-                        'email' : self.Email,
-                        'phone' : self.PhoneNumber,
+                        'Email' : self.Email,
+                        'Phone' : self.PhoneNumber,
                         'ID': self.ID,
                         'UserID' : self.UserID,
                 }
