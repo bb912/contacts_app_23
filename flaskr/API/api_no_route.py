@@ -123,7 +123,7 @@ def contactsFunctionID(id):
 		elif request.method == 'DELETE':
 				return delete_contact(id)
 
-@app.route('/contactsApi/search', methods=['GET'])
+@app.route('/contactsApi/search', methods=['GET', 'POST'])
 #@cross_origin()
 def searchFunctionID():
 
