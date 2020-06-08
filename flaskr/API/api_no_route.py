@@ -83,9 +83,10 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 @app.route('/contactsApi', methods=['GET', 'POST'])
 #@cross_origin()
 def contactsFunction():
-	
+
 		if request.method == "OPTIONS": # CORS preflight
         	return _build_cors_prelight_response()
+
 		body = request.get_json()
 
 
