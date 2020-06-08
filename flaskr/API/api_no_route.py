@@ -238,14 +238,14 @@ def usersFunction():
 
 
 @app.route('/')
-@app.route('/userApi/login', methods=['GET'])
+@app.route('/userApi/login', methods=['POST'])
 #@cross_origin()
 def userLogin():
 
 	body = request.get_json()
 
 	# for logging in
-	if request.method == 'GET':
+	if request.method == 'POST':
 		return verifyPassword(body.get('Login'), body.get('Password'))
 
 
