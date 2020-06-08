@@ -83,7 +83,9 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 @app.route('/contactsApi', methods=['GET', 'POST'])
 #@cross_origin()
 def contactsFunction():
-
+	
+		if request.method == "OPTIONS": # CORS preflight
+        	return _build_cors_prelight_response()
 		body = request.get_json()
 
 
@@ -261,6 +263,13 @@ def usersFunctionID(id):
 				login = body.get('Login', '')
 				password = body.get('Password', '')
 				return update_user(id, first, last, login, password)
+
+def _build_cors_prelight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
 
 
 
