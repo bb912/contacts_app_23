@@ -87,9 +87,10 @@ def contactsFunction():
 		#if request.method == "OPTIONS": # CORS preflight
         #		return _build_cors_prelight_response()
 
-		#body = request.get_json()
-		body = request.data.get_json()
-		print(body)
+		body = request.get_json(force=True)
+		#body = request.text
+		#data = json.loads(data)
+		#print(body)
 
 		# list all contacts for user
 		#if request.method == 'GET':
