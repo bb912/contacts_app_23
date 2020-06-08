@@ -22,8 +22,6 @@ var userId = 0;
 var firstName = "";
 var lastName = "";
 
-// Need to update html to have fields to enter firstName & lastName
-// Update button onclick to send XMLHTTPRequest.
 
 function signUp() {
   var first = document.getElementById("firstText").value;
@@ -31,16 +29,10 @@ function signUp() {
   var user = document.getElementById("username").value;
   var pass = document.getElementById("password").value;
 
-  var data = new FormData();
-  data.append("FirstName", first);
-  data.append("LastName", last);
-  data.append("Login", user);
-  data.append("Password", pass);
-  
+  var jsonPayload = JSON.stringify({FirstName: first, LastName: last, Login:user,Password:pass });
   var xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
   try{
-
     xhr.addEventListener("readystatechange", function() {
       if(this.readyState === 4) {
         if (this.status === 0 || (this.status >= 200 && this.status < 400)){
@@ -58,42 +50,9 @@ function signUp() {
   }
   
   xhr.open("POST", urlBase + "/userApi");
-  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  xhr.send(data);
-}
-/*
-function signUp2()
-{
-  alert("signUp alert " + document.getElementById("username").value);
-  // var button = document.getElementById("btn");
-  var first = document.getElementById("firstText").value;
-  var last = document.getElementById("lastText").value;
-  var user = document.getElementById("username").value;
-  var pass = document.getElementById("password").value;
-  var jsonPayload = '{FirstName= ' + first + ', LastName= ' + last + ', Login= ' + user + ', Password= ' + pass + '}';
-  //198.12.250.5:4996/userApi?FirstName=hello&LastName=darkness&Login=myold&Password=friend
-  var url = urlBase + '/userApi';//?FirstName=' + first + "&LastName=" + last + "&Login=" + user + "&Password=" + pass;
-  var xhr = new XMLHttpRequest();
-  //xhr.addEventListener("readystatechange", reqListener);
-  xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-  try
-  {
-    //var jsonObject = JSON.parse(xhr.responseText);
-    xhr.onreadystatechange = function () {
-      //alert("xhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status + "\nXMLHttpRequest.DONE = " + XMLHttpRequest.DONE);
-			  
-    };
-    xhr.send(jsonPayload);
-    //alert("sent.\nxhr.readyState = " + xhr.readyState + "\nxhr.status = " + xhr.status);
-  }
-  catch(err)
-  {
-    document.getElementById("signupmessage").innerHTML = err.message;
-  }
+  xhr.send(jsonPayload);
 }
-*/
 
 // Logging in existing user. Returns to main page if request unsuccessful.
 function doLogin(){
@@ -103,28 +62,37 @@ function doLogin(){
 
   var login = document.getElementById("loginName").value;
   var password = document.getElementById("loginPassword").value;
-  
-  var data = new FormData();
-  data.append("Login", login);
-  data.append("Password", password);
-  
+
+  var jsonPayload = JSON.stringify({Login: login, Password: password});
   var xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
+  try{
+    xhr.addEventListener("readystatechange", function() {
+      if(this.readyState === 4) {
+        if (this.status === 0 || (this.status >= 200 && this.status < 400)){
+          var jsonObject = JSON.parse(xhr.responseText);
+          userId = jsonObject.User.ID;
+          saveCookie();
+          window.location.href = "html2.html";
+        }
+        else{
+          document.getElementById("loginmessage").innerHTML = "Error logging in";
+        }
+      }
+    });
+  }
+  catch(err)
+  {
+    document.getElementById("loginmessage").innerHTML = err.message;
+  }
   
-  xhr.addEventListener("readystatechange", function() {
-    if(this.readyState === 4) {
-      console.log(this.responseText);
-    }
-  });
-  
-  xhr.open("GET", urlBase + "/userApi/login");
+  xhr.open("POST", urlBase + "/userApi/login");
   xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  
-  xhr.send(data);
-
+  alert ("jsonPayload: "+ jsonPayload);
+  xhr.send(jsonPayload);
 }
 
-
+/*
 function doLogin2(){
   userId = 0;
 	firstName = "";
@@ -214,7 +182,7 @@ function doLogin3()
   }
 
 }
-
+*/
 function saveCookie()
 {
   var minutes = 20;
@@ -322,16 +290,7 @@ function checkPhone(phone)
 }
 // end of helper functions
 
-function addContact()
-{
-  //alert("addContact() alert!!");
-  alert("Found cookie " + getCookie());
-  var valid = false;
-  var newFirst = document.getElementById("firstText").value;
-  var newLast = document.getElementById("lastText").value;
-  var newEmail = document.getElementById("emailText").value;
-  var newPhone = document.getElementById("phoneText").value;
-
+/*
   // Checks validity of user input before sending JSON payload.
     if(!checkEmail(newEmail))
     {
@@ -343,36 +302,38 @@ function addContact()
       //document.getElementById("addContactResult").innerHTML = "Invalid phone number";
       return;
     }
-    else
-    {
-      valid = true;
-    }
+*/
+function addContact()
+{
+  var userId = getCookie();
+  var newFirst = document.getElementById("firstText").value;
+  var newLast = document.getElementById("lastText").value;
+  var newEmail = document.getElementById("emailText").value;
+  var newPhone = document.getElementById("phoneText").value;
 
-  var jsonPayload = '{"FirstName": "' + newFirst + '", "LastName": "' + newLast + '", "Email" : "' + newEmail + '","PhoneNumber" : "' + newPhone + '"}';
-
-  // Edit name to match with API python file.
-  var url = urlBase + "/contactsApi?UserID=" + getCookie() + "&FirstName=" + newFirst + "&LastName=" + newLast + "&Email=" + newEmail + "&PhoneNumber=" + newPhone;
-  
+  var jsonPayload = JSON.stringify({FirstName: newFirst, LastName: newLast, Email: newEmail, PhoneNumber: newPhone, UserID:userId});
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
-  //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  xhr.setRequestHeader("Content-type", "text/plain; charset=UTF-8");
-  try
-	{
-		xhr.onreadystatechange = function()
-		{
-			if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 400))
-			{
-        //document.getElementById("contactAddResult").innerHTML = "Contact has been added";
-			}
-    };
-    alert("url: " + url);
-		xhr.send(jsonPayload);
+  //xhr.withCredentials = true;
+  try{
+		xhr.addEventListener("readystatechange", function(){
+      if(this.readyState === 4) {
+			  if (this.status === 0 || (this.status >= 200 && this.status < 400)){
+          //document.getElementById("contactAddResult").innerHTML = "Contact has been added";
+        }
+        else{
+          //failed to add contact
+        }
+      }
+    });
 	}
 	catch(err)
 	{
 		//document.getElementById("contactAddResult").innerHTML = err.message;
-	}
+  }
+  xhr.open("POST", urlBase + "/contactsApi");
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  alert("jsonPayload: " + jsonPayload);
+  xhr.send(jsonPayload);
 }
 
 
@@ -426,19 +387,28 @@ function createList(json)
   }
 }
 
+/*<span class="custom-checkbox">
+									<input type="checkbox" id="checkbox1" name="options[]" value="1">
+									<label for="checkbox1"></label>
+								</span> */
 function insertNewRecord(data) {
   alert(data.FirstName);
   var table = document.getElementById("contactstable").getElementsByTagName('tbody')[0];
   var newRow = table.insertRow(table.length);
-  cell1 = newRow.insertCell(0);
+  cell0 = newRow.insertCell(0);
+  cell0.innerHTML = `<span class="custom-checkbox">
+  <input type="checkbox" id="checkbox1" name="options[]" value="1">
+  <label for="checkbox1"></label>
+</span>`
+  cell1 = newRow.insertCell(1);
   cell1.innerHTML = data.FirstName;
-  cell2 = newRow.insertCell(1);
+  cell2 = newRow.insertCell(2);
   cell2.innerHTML = data.LastName;
-  cell3 = newRow.insertCell(2);
+  cell3 = newRow.insertCell(3);
   cell3.innerHTML = data.Email;
-  cell4 = newRow.insertCell(3);
-  cell4.innerHTML = data.Phone;
   cell4 = newRow.insertCell(4);
+  cell4.innerHTML = data.Phone;
+  cell4 = newRow.insertCell(5);
   cell4.innerHTML = `<a href="#editContactModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
   <a href="#deleteContactModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>`;
 }
@@ -492,13 +462,6 @@ function searchContacts()
 	    {
         var jsonObj = JSON.parse(xhr.responseText);
         var countKey = Object.keys(jsonObj).length;
-        //alert("help");
-        alert("countKey = "+countKey);
-        
-
-        //alert(''+jsonObj["0"].Email);
-        //alert('a'+jsonObj["0"].Email);
-        //alert('b'+jsonObj["%d",0].Email);
         var i
         for (i = 0; i < countKey; i++){
           alert('b'+jsonObj["%d",i].Email);
