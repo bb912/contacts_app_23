@@ -80,7 +80,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 
 # LISTING ALL CONTACTS OR ADDING A CONTACT FOR A USER
 @app.route('/')
-@app.route('/contactsApi', methods=['GET', 'POST'])
+@app.route('/contactsApi', methods=['GET', 'POST', 'OPTIONS'])
 #@cross_origin()
 def contactsFunction():
 
