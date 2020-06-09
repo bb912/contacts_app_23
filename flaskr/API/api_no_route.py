@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import hashlib
 import pymysql
-from sqlalchemy import create_engine, or_
+from sqlalchemy import create_engine, or_, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
 from gevent.pywsgi import WSGIServer
@@ -78,7 +78,7 @@ def update_contact(contact_id, first_name, last_name, phone, email):
 
 #POST request requires first_name, last_name, phone, email, user_id,
 
-# LISTING ALL CONTACTS OR ADDING A CONTACT FOR A USER
+#ADDING A CONTACT FOR A USER
 @app.route('/')
 @app.route('/contactsApi', methods=['POST'])
 #@cross_origin()
@@ -108,13 +108,13 @@ def contactsFunction():
 
 
 # get a specific contact by contact ID, or update contact, or delete contact
-@app.route('/contactsApi/<int:id>', methods=['GET', 'PUT', 'DELETE', 'POST'])
+@app.route('/contactsApi/<int:id>', methods=['GET', 'POST'])
 #@cross_origin()
 def contactsFunctionID(id):
 		if request.method == 'GET':
 				return get_contact(id)
 
-		elif request.method == 'PUT' or request.method == 'POST':
+		elif request.method == 'POST':
 
 				body = request.get_json(force=True)
 
@@ -125,8 +125,6 @@ def contactsFunctionID(id):
 				user = body.get('UserID', '')
 				return update_contact(id, first, last, phone, email)
 
-		elif request.method == 'DELETE':
-				return delete_contact(id)
 
 # get a specific contact by contact ID, or update contact, or delete contact
 @app.route('/contactsApi/<int:id>/delete', methods=['POST'])
@@ -135,6 +133,7 @@ def contactsFunctionDelete(id):
 		return delete_contact(id)
 
 
+# search contacts ordered by last name
 @app.route('/contactsApi/search', methods=['GET', 'POST'])
 #@cross_origin()
 def searchFunctionID():
@@ -156,7 +155,7 @@ def get_searched_contacts(search_term, user):
 			or_(Contact.FirstName.like(search_term), \
 				Contact.LastName.like(search_term), \
 				Contact.PhoneNumber.like(search_term), \
-				Contact.Email.like(search_term)))
+				Contact.Email.like(search_term))).order_by(desc(Contact.LastName))
 
 	#return jsonify(Contact=[c.serialize for c in contacts_for_user])
 	return jsonify({idx: c.serialize for idx, c in enumerate(contacts_for_user)})
