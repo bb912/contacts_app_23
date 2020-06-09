@@ -262,6 +262,14 @@ function getCheckedBoxes() {
   return checkboxesChecked.length > 0 ? checkboxesChecked : null;
 }
 
+function toggle(source) {
+  //alert(source.checked);
+  checkboxes = document.getElementsByName('options[]');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+
 function insertNewRecord(data) {
   //alert(data.FirstName);
   var table = document.getElementById("contactstable").getElementsByTagName('tbody')[0];
@@ -308,6 +316,9 @@ function searchContacts()
             //alert('b'+jsonObj["%d",i].Email);
             insertNewRecord(jsonObj["%d",i]);
           }
+
+          document.getElementById("numShown").innerHTML = `Showing <b>`+countKey+`</b> entries`
+
         }
       }
     };
