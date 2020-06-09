@@ -204,7 +204,7 @@ function addContact()
 	{
 		//document.getElementById("contactAddResult").innerHTML = err.message;
   }
-  xhr.open("POST", urlBase + "/contactsApi");
+  xhr.open("POST", urlBase + "/contactsApi",false);
   //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   //alert("jsonPayload: " + jsonPayload);
   xhr.send(jsonPayload);
@@ -215,7 +215,6 @@ function deleteContact(){
   var xhr = new XMLHttpRequest();
   //xhr.withCredentials = true;
   //alert("jsonPayload: "+jsonPayload);
-  xhr.open("POST", urlBase + "/contactsApi/"+contactID+"/delete", true);
   
   try{
     xhr.addEventListener("readystatechange", function() {
@@ -234,8 +233,33 @@ function deleteContact(){
     console.log(this.responseText);
   }
 
+  xhr.open("POST", urlBase + "/contactsApi/"+contactID+"/delete", false);
   //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   xhr.send(jsonPayload);
+}
+
+function deleteMultiple(){
+  alert ("deleteMultiple");
+  var checkedBoxes = getCheckedBoxes();
+  for (var i = 0; i < checkedBoxes.length; i++){
+    //alert("checkedBoxes["+i+"].id:" + checkedBoxes[i].id);
+    contactID = checkedBoxes[i].id;
+    deleteContact();
+  }
+}
+
+function getCheckedBoxes() {
+  var checkboxes = document.getElementsByName("options[]");
+  var checkboxesChecked = [];
+  // loop over them all
+  for (var i=0; i<checkboxes.length; i++) {
+     // And stick the checked ones onto an array...
+     if (checkboxes[i].checked) {
+        checkboxesChecked.push(checkboxes[i]);
+     }
+  }
+  // Return the array if it is non-empty, or null
+  return checkboxesChecked.length > 0 ? checkboxesChecked : null;
 }
 
 function insertNewRecord(data) {
@@ -244,7 +268,7 @@ function insertNewRecord(data) {
   var newRow = table.insertRow(table.length);
   cell0 = newRow.insertCell(0);
   cell0.innerHTML = `<span class="custom-checkbox">
-  <input type="checkbox" id="checkbox1" rowID=`+data.ID+` name="options[]" value="1">
+  <input type="checkbox" id=`+data.ID+` name="options[]" value="1">
   <label for="checkbox1"></label>
 </span>`
   cell1 = newRow.insertCell(1);
@@ -323,7 +347,7 @@ function editContact(){
     console.log(this.responseText);
   }
 
-  xhr.open("POST", urlBase + "/contactsApi/"+contactID, true);
+  xhr.open("POST", urlBase + "/contactsApi/"+contactID, false);
   //xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   //alert("jsonPayload: "+jsonPayload);
   console.log(jsonPayload);
