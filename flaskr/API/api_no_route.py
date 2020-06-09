@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import hashlib
 import pymysql
-from sqlalchemy import create_engine, or_, desc
+from sqlalchemy import create_engine, or_, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Contact
 from gevent.pywsgi import WSGIServer
@@ -133,13 +133,12 @@ def contactsFunctionDelete(id):
 		return delete_contact(id)
 
 
-# search contacts ordered by last name
+# search contacts ordered by last name.
+# Needs SearchTerm and UserID in request args, no body
 @app.route('/contactsApi/search', methods=['GET', 'POST'])
-#@cross_origin()
 def searchFunctionID():
 
 	body = request.args
-
 
 	search_term = body.get('SearchTerm')
 	user = body.get('UserID')
@@ -155,9 +154,8 @@ def get_searched_contacts(search_term, user):
 			or_(Contact.FirstName.like(search_term), \
 				Contact.LastName.like(search_term), \
 				Contact.PhoneNumber.like(search_term), \
-				Contact.Email.like(search_term))).order_by(desc(Contact.LastName))
+				Contact.Email.like(search_term))).order_by(asc(Contact.LastName))
 
-	#return jsonify(Contact=[c.serialize for c in contacts_for_user])
 	return jsonify({idx: c.serialize for idx, c in enumerate(contacts_for_user)})
 
 
